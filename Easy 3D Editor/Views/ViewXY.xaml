@@ -1,0 +1,26 @@
+﻿<Window x:Class="Easy_3D_Editor.Views.ViewXY"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Easy_3D_Editor.Views"
+        mc:Ignorable="d"
+        Title="{Binding Title.Get}" Height="500" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" Command="{Binding RasterPlus}">+</Button>
+        <Button Grid.Column="1" Command="{Binding RasterMinus}">-</Button>
+        <Button Grid.Column="2" Command="{Binding Test}"></Button>
+
+        <Canvas Grid.Row="1" Grid.ColumnSpan="3" x:Name="can" Background="White">
+        </Canvas>
+    </Grid>
+</Window>

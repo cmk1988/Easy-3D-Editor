@@ -1,0 +1,26 @@
+﻿<Window x:Class="Easy_3D_Editor.ViewModels.Input"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Easy_3D_Editor.ViewModels"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Title="Input" Height="80" Width="180">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="2" Text="{Binding Text.Get}">
+        </TextBlock>
+        <TextBox Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Output.Get}"></TextBox>
+        <Button Grid.Row="2" Command="{Binding OK}">OK</Button>
+        <Button Grid.Row="2" Grid.Column="1" Command="{Binding Cancel}">Abbrechen</Button>
+    </Grid>
+</Window>

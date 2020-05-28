@@ -1,0 +1,30 @@
+﻿<Window x:Class="Easy_3D_Editor.Views.ListView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Easy_3D_Editor.Views"
+        mc:Ignorable="d"
+        Title="ListView" Height="450" Width="200">
+    <Grid>
+        <ListBox ItemsSource="{Binding List.Get}" SelectedItem="{Binding SelectedItem.Get}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="60"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Text}"></TextBlock>
+                        <Button Grid.Column="1" Command="{Binding RemoveCommand}">Remove</Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

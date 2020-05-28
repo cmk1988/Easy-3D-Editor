@@ -1,0 +1,67 @@
+﻿<Window x:Class="Easy_3D_Editor.Views.ModelMainMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Easy_3D_Editor.Views"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        Title="" Height="910" Width="80">
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Command="{Binding InsertCommand}">
+            <Image Source="{Binding Image0.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="1" Command="{Binding SelectCommand}">
+            <Image Source="{Binding Image1.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="2" Command="{Binding SelectSingleCommand}">
+            <Image Source="{Binding Image2.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="3" Command="{Binding CopyCommand}">
+            <Image Source="{Binding Image3.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="4" Command="{Binding CubeCommand}">
+            <Image Source="{Binding Image4.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="5" Command="{Binding NewModelCommand}">
+            <Image Source="{Binding Image5.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="6" Command="{Binding ListCommand}">
+            <Image Source="{Binding Image6.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="7" Command="{Binding SaveCommand}">
+            <Image Source="{Binding Image7.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="8" Command="{Binding CloseCommand}">
+            <Image Source="{Binding Image8.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="9" Command="{Binding ExportCommand}">
+            <Image Source="{Binding Image9.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="10" Command="{Binding MoveCommand}">
+            <Image Source="{Binding Image10.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="11" Command="{Binding ResizeCommand}">
+            <Image Source="{Binding Image11.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="12" Command="{Binding LoadCommand}">
+            <Image Source="{Binding Image7.Get.Source}"></Image>
+        </Button>
+    </Grid>
+</Window>

@@ -29,7 +29,7 @@ namespace Easy_3D_Editor.Models
     }
 
     [Serializable]
-    public class Element
+    public abstract class Element
     {
         public static int id = 0;
 
@@ -59,12 +59,38 @@ namespace Easy_3D_Editor.Models
     [Serializable]
     class Cube : Element
     {
-
         public Cube() : base()
         {
             Text = $"Id: {Id} (Cube)";
             Positions = new Position3D[8];
             for (int i = 0; i < 8; i++)
+            {
+                Positions[i] = new Position3D();
+            }
+        }
+    }
+
+    [Serializable]
+    class Sphere : Element
+    {
+        public int level { get; }
+        public int positionCount { get; }
+        public int positionPerLevelCount { get; }
+        public int flatCount { get; }
+
+        public Sphere(int level) : base()
+        {
+            if (level % 2 == 1)
+                level -= 1;
+            this.level = level;
+
+            positionPerLevelCount = level + level - 2;
+            positionCount = (level - 2) * positionPerLevelCount;
+            flatCount = level * positionPerLevelCount;
+
+            Text = $"Id: {Id} (Sphere) level={level}, points={positionCount}";
+            Positions = new Position3D[positionCount];
+            for (int i = 0; i < positionCount; i++)
             {
                 Positions[i] = new Position3D();
             }

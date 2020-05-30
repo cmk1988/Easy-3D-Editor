@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Activation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,7 +85,7 @@ namespace Easy_3D_Editor.Services
         int addVertex(int x, int y, int z)
         {
             float fX = x * multiplicator;
-            float fY = y * multiplicator;
+            float fY = y * multiplicator * -1.0f;
             float fZ = z * multiplicator;
 
             var vertex = vertices.FirstOrDefault(v => v.X == fX && v.Y == fY && v.Z == fZ);
@@ -93,7 +94,7 @@ namespace Easy_3D_Editor.Services
                 return vertex.Id;
             }
             int i = vertices.Count + 1;
-            vertices.Add(new Vertex 
+            vertices.Add(new Vertex
             {
                 X = fX,
                 Y = fY,
@@ -157,7 +158,7 @@ namespace Easy_3D_Editor.Services
             {
                 VertexId = addVertex(c.X, c.Y, c.Z)
             });
-            if(d != null)
+            if (d != null)
                 flat.Points.Add(new FlatPoint
                 {
                     VertexId = addVertex(d.X, d.Y, d.Z)
@@ -209,17 +210,76 @@ namespace Easy_3D_Editor.Services
 
             foreach (var element in elements)
             {
-                if (element.Positions.Count() == 8)
+                if (element.GetType() == typeof(Cube))
                 {
-                    addFlat(element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3]);
-                    addFlat(element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7]);
-                    addFlat(element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1]);
-                    addFlat(element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2]);
-                    addFlat(element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3]);
-                    addFlat(element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2]);
+                    addFlatsForCube((Cube)element);
+                }
+                else if (element.GetType() == typeof(Sphere))
+                {
+                    addFlatsForSphere((Sphere)element);
                 }
             }
             calcFlatNormals();
+        }
+
+        void addFlatsForCube(Cube element)
+        {
+            if (element.Positions.Count() != 8)
+                throw new Exception("Corrupted cube! element.Positions.Count() != 8");
+            addFlat(element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3]);
+            addFlat(element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7]);
+            addFlat(element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1]);
+            addFlat(element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2]);
+            addFlat(element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3]);
+            addFlat(element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2]);
+        }
+
+        void addFlatsForSphere(Sphere element)
+        {
+            for (int i = 1; i < element.positionPerLevelCount; ++i)
+            {
+                addFlat(
+                    element.Positions[0], 
+                    element.Positions[i], 
+                    element.Positions[i + 1]);
+            }
+            addFlat(
+                element.Positions[0], 
+                element.Positions[element.positionPerLevelCount], 
+                element.Positions[1]);
+
+            for (int i = 0; i < element.level - 2; ++i)
+            {
+                var level = element.positionPerLevelCount * i + 1;
+                for (int j = 0; j < element.positionPerLevelCount; ++j)
+                {
+                    addFlat(
+                        element.Positions[level + j],
+                        element.Positions[level + j + element.positionPerLevelCount],
+                        element.Positions[level + j + element.positionPerLevelCount + 1],
+                       element.Positions[level + j + 1]);
+                }
+                addFlat(
+                    element.Positions[level],
+                    element.Positions[level + element.positionPerLevelCount],
+                    element.Positions[level + element.positionPerLevelCount + 1],
+                   element.Positions[level + 1]);
+            }
+
+
+            for (int i = element.positionCount - element.positionPerLevelCount - 1; 
+                i < element.positionPerLevelCount - 1; 
+                ++i)
+            {
+                addFlat(
+                    element.Positions[i],
+                    element.Positions[i + 1],
+                    element.Positions[element.positionCount - 1]);
+            }
+            addFlat(
+                element.Positions[element.positionCount - element.positionPerLevelCount - 1],
+                element.Positions[element.positionCount - 2],
+                element.Positions[element.positionCount - 1]);
         }
 
         public void Export()

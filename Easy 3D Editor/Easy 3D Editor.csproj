@@ -99,6 +99,9 @@
     <Compile Include="Views\ModelMainMenu.xaml.cs">
       <DependentUpon>ModelMainMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ShapeView.xaml.cs">
+      <DependentUpon>ShapeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewXY.xaml.cs">
       <DependentUpon>ViewXY.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ModelMainMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShapeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

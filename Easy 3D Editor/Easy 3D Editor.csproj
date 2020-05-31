@@ -78,6 +78,7 @@
     <Compile Include="ViewModels\DataInputViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
     <Compile Include="ViewModels\MapEditorViewModel.cs" />
+    <Compile Include="ViewModels\ShapeViewModel.cs" />
     <Compile Include="Views\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
     </Compile>

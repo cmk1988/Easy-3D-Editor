@@ -82,7 +82,7 @@ namespace Easy_3D_Editor.Services
         List<Normal> normals = new List<Normal>();
         List<Flat> flats = new List<Flat>();
 
-        int addVertex(int x, int y, int z)
+        int addVertex(float x, float y, float z)
         {
             float fX = x * multiplicator;
             float fY = y * multiplicator * -1.0f;
@@ -104,12 +104,9 @@ namespace Easy_3D_Editor.Services
             return i;
         }
 
-        int addTexture(int x, int y)
+        int addTexture(float x, float y)
         {
-            float fX = x;
-            float fY = y;
-
-            var texture = textureCoordinates.FirstOrDefault(v => v.X == fX && v.Y == fY);
+            var texture = textureCoordinates.FirstOrDefault(v => v.X == x && v.Y == y);
             if (texture != null)
             {
                 return texture.Id;
@@ -117,8 +114,8 @@ namespace Easy_3D_Editor.Services
             int i = textureCoordinates.Count + 1;
             textureCoordinates.Add(new TextureCoordinate
             {
-                X = fX,
-                Y = fY,
+                X = x,
+                Y = y,
                 Id = i
             });
             return i;
@@ -236,50 +233,58 @@ namespace Easy_3D_Editor.Services
 
         void addFlatsForSphere(Sphere element)
         {
+            int f = 0;
+
             for (int i = 1; i < element.positionPerLevelCount; ++i)
             {
                 addFlat(
                     element.Positions[0], 
                     element.Positions[i], 
                     element.Positions[i + 1]);
+                f++;
             }
             addFlat(
                 element.Positions[0], 
                 element.Positions[element.positionPerLevelCount], 
                 element.Positions[1]);
+            f++;
 
-            for (int i = 0; i < element.level - 2; ++i)
+            for (int i = 0; i < element.level - 3; ++i)
             {
                 var level = element.positionPerLevelCount * i + 1;
-                for (int j = 0; j < element.positionPerLevelCount; ++j)
+                for (int j = 0; j < element.positionPerLevelCount - 1; ++j)
                 {
                     addFlat(
                         element.Positions[level + j],
                         element.Positions[level + j + element.positionPerLevelCount],
                         element.Positions[level + j + element.positionPerLevelCount + 1],
                        element.Positions[level + j + 1]);
+                    f++;
                 }
                 addFlat(
                     element.Positions[level],
                     element.Positions[level + element.positionPerLevelCount],
-                    element.Positions[level + element.positionPerLevelCount + 1],
-                   element.Positions[level + 1]);
+                    element.Positions[level + element.positionPerLevelCount * 2 - 1],
+                   element.Positions[level + element.positionPerLevelCount - 1]);
+                f++;
             }
 
 
             for (int i = element.positionCount - element.positionPerLevelCount - 1; 
-                i < element.positionPerLevelCount - 1; 
+                i < element.positionCount - 1; 
                 ++i)
             {
                 addFlat(
                     element.Positions[i],
                     element.Positions[i + 1],
                     element.Positions[element.positionCount - 1]);
+                f++;
             }
             addFlat(
                 element.Positions[element.positionCount - element.positionPerLevelCount - 1],
                 element.Positions[element.positionCount - 2],
                 element.Positions[element.positionCount - 1]);
+            f++;
         }
 
         public void Export()

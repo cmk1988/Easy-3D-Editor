@@ -21,9 +21,9 @@ namespace Easy_3D_Editor.Models
     [Serializable]
     public class Position3D
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public bool IsSelected { get; set; }
     }
@@ -80,13 +80,13 @@ namespace Easy_3D_Editor.Models
 
         public Sphere(int level) : base()
         {
-            if (level % 2 == 1)
+            if (level % 2 == 0)
                 level -= 1;
             this.level = level;
 
             positionPerLevelCount = level + level - 2;
-            positionCount = (level - 2) * positionPerLevelCount;
-            flatCount = level * positionPerLevelCount;
+            positionCount = (level - 2) * positionPerLevelCount + 2;
+            flatCount = (level-1) * positionPerLevelCount;
 
             Text = $"Id: {Id} (Sphere) level={level}, points={positionCount}";
             Positions = new Position3D[positionCount];

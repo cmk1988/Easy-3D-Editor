@@ -1,5 +1,6 @@
 ﻿using Easy_3D_Editor.Models;
 using Easy_3D_Editor.Services;
+using Easy_3D_Editor.Views;
 using System;
 using System.Collections.Generic;
 //using System.Drawing;
@@ -10,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfServices;
+using Xml2CSharp;
 
 namespace Easy_3D_Editor.ViewModels
 {
@@ -197,9 +199,26 @@ namespace Easy_3D_Editor.ViewModels
 
         void cube()
         {
-            xy.ClickMode = CLICK_MODE.NEW_CUBE;
-            xz.ClickMode = CLICK_MODE.NEW_CUBE;
-            yz.ClickMode = CLICK_MODE.NEW_CUBE;
+            removeRectangles();
+            var vm = new ShapeViewModel();
+            ViewManager.ShowDialogView(typeof(ShapeView), vm);
+
+            if (vm.Result == 0)
+                return;
+
+            if (vm.Result == 1)
+            {
+                xy.ClickMode = CLICK_MODE.NEW_CUBE;
+                xz.ClickMode = CLICK_MODE.NEW_CUBE;
+                yz.ClickMode = CLICK_MODE.NEW_CUBE;
+            }
+
+            if (vm.Result == 2)
+            {
+                xy.ClickMode = CLICK_MODE.NEW_SPHERE;
+                xz.ClickMode = CLICK_MODE.NEW_SPHERE;
+                yz.ClickMode = CLICK_MODE.NEW_SPHERE;
+            }
         }
 
         void newModel()
@@ -509,6 +528,67 @@ namespace Easy_3D_Editor.ViewModels
 
         void add()
         {
+            if (xy.ClickMode == CLICK_MODE.NEW_CUBE)
+                addCube();
+            else if (xy.ClickMode == CLICK_MODE.NEW_SPHERE)
+                addSphere();
+
+            resetList();
+            removeRectangles();
+            setLines();
+        }
+
+        void addSphere()
+        {
+            List<int> l = new List<int>();
+
+            int level = 11;
+            var sphere = new Sphere(level);
+
+            float middleX = (float)cube_x + (cube_width / 2.0f);
+            float middleY = (float)cube_y + (cube_height / 2.0f);
+            float middleZ = (float)cube_z + (cube_depth / 2.0f);
+
+            float alpha = (float)(2 * Math.PI / (sphere.positionPerLevelCount));
+
+            int f = 2;
+
+            sphere.Positions[0].X = middleX;
+            sphere.Positions[0].Y = cube_y;
+            sphere.Positions[0].Z = middleZ;
+
+            sphere.Positions[sphere.positionCount - 1].X = middleX;
+            sphere.Positions[sphere.positionCount - 1].Y = cube_y + cube_height;
+            sphere.Positions[sphere.positionCount - 1].Z = middleZ;
+
+            var curLvl = 1;
+            for (int i = level - 1; i > 1; --i)
+            {
+                var a = alpha * i + alpha + Math.PI / 4.0f;
+                var y = Math.Sin(a) * (cube_height / 2.0f);
+                var radius = Math.Cos(a) * (cube_width / 2.0f);
+
+                for (int j = 0; j < sphere.positionPerLevelCount; j++)
+                {
+                    a = alpha * j;
+                    var x = Math.Cos(a) * radius;
+                    var z = Math.Sin(a) * radius;
+
+                    var id = (curLvl - 1) * sphere.positionPerLevelCount + j + 1;
+
+                    sphere.Positions[id].X = (float)x + middleX;
+                    sphere.Positions[id].Y = (float)y + middleY;
+                    sphere.Positions[id].Z = (float)z + middleZ;
+                    f++;
+                    l.Add(id);
+                }
+                curLvl++;
+            }
+            Elements.Get.Add(sphere);
+        }
+
+        void addCube()
+        {
             var cube = new Cube();
 
             cube.Positions[0].X = cube_x;
@@ -544,10 +624,6 @@ namespace Easy_3D_Editor.ViewModels
             cube.Positions[7].Z = cube_z + cube_depth;
 
             Elements.Get.Add(cube);
-
-            resetList();
-            removeRectangles();
-            setLines();
         }
 
         Line createLine(Element element, int i, int j, int xyz)

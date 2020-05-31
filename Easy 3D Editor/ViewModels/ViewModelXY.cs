@@ -19,6 +19,7 @@ namespace Easy_3D_Editor.ViewModels
     enum CLICK_MODE
     {
         NEW_CUBE,
+        NEW_SPHERE,
         SELECT_AREA,
         SELECT_SINGLE,
         RESIZE,
@@ -164,7 +165,8 @@ namespace Easy_3D_Editor.ViewModels
                     {
                         select(b);
                     }
-                    else if (ClickMode == CLICK_MODE.NEW_CUBE)
+                    else if (ClickMode == CLICK_MODE.NEW_CUBE ||
+                        ClickMode == CLICK_MODE.NEW_SPHERE)
                     {
                         if (!isStarted)
                             startPosition = b.GetPosition(Can.Get);
@@ -180,7 +182,8 @@ namespace Easy_3D_Editor.ViewModels
                         {
                             selectArea(b);
                         }
-                        else if (ClickMode == CLICK_MODE.NEW_CUBE)
+                        else if (ClickMode == CLICK_MODE.NEW_CUBE ||
+                        ClickMode == CLICK_MODE.NEW_SPHERE)
                         {
                             cube(b);
                         }

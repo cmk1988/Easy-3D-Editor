@@ -543,7 +543,7 @@ namespace Easy_3D_Editor.ViewModels
             List<int> l = new List<int>();
             List<float> l2 = new List<float>();
 
-            int level = 11;
+            int level = 21;
             var sphere = new Sphere(level);
 
             float middleX = (float)cube_x + (cube_width / 2.0f);

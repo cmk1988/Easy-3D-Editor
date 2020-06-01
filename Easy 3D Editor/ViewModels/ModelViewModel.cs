@@ -541,6 +541,7 @@ namespace Easy_3D_Editor.ViewModels
         void addSphere()
         {
             List<int> l = new List<int>();
+            List<float> l2 = new List<float>();
 
             int level = 11;
             var sphere = new Sphere(level);
@@ -554,19 +555,20 @@ namespace Easy_3D_Editor.ViewModels
             int f = 2;
 
             sphere.Positions[0].X = middleX;
-            sphere.Positions[0].Y = cube_y;
+            sphere.Positions[0].Y = cube_y + cube_height;
             sphere.Positions[0].Z = middleZ;
 
             sphere.Positions[sphere.positionCount - 1].X = middleX;
-            sphere.Positions[sphere.positionCount - 1].Y = cube_y + cube_height;
+            sphere.Positions[sphere.positionCount - 1].Y = cube_y;
             sphere.Positions[sphere.positionCount - 1].Z = middleZ;
 
             var curLvl = 1;
             for (int i = level - 1; i > 1; --i)
             {
-                var a = alpha * i + alpha + Math.PI / 4.0f;
-                var y = Math.Sin(a) * (cube_height / 2.0f);
-                var radius = Math.Cos(a) * (cube_width / 2.0f);
+                var a = alpha * curLvl;// + alpha;
+                var y = Math.Cos(a) * (cube_height / 2.0f);
+                l2.Add((float)y);
+                var radius = Math.Sin(a) * (cube_width / 2.0f);
 
                 for (int j = 0; j < sphere.positionPerLevelCount; j++)
                 {

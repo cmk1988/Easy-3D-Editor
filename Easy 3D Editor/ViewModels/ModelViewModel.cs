@@ -121,7 +121,7 @@ namespace Easy_3D_Editor.ViewModels
         {
             Elements.Get.ForEach(e =>
             {
-                if(clearAll)
+                if (clearAll)
                     e.IsSelected = false;
                 foreach (var point in e.Positions)
                 {
@@ -262,7 +262,7 @@ namespace Easy_3D_Editor.ViewModels
             var vm = new DataInputViewModel();
             vm.Text.Get = "Bitte geben Sie den Dateinamen ein";
             ViewManager.ShowDialogView(typeof(Input), vm);
-            if(vm.IsOK)
+            if (vm.IsOK)
             {
                 var exporter = new WavefrontExporter(vm.Output.Get + ".obj", Elements.Get);
                 exporter.Export();
@@ -543,7 +543,7 @@ namespace Easy_3D_Editor.ViewModels
             List<int> l = new List<int>();
             List<float> l2 = new List<float>();
 
-            int level = 21;
+            int level = 7;
             var sphere = new Sphere(level);
 
             float middleX = (float)cube_x + (cube_width / 2.0f);
@@ -628,6 +628,8 @@ namespace Easy_3D_Editor.ViewModels
             Elements.Get.Add(cube);
         }
 
+
+
         Line createLine(Element element, int i, int j, int xyz)
         {
             if (xyz == 1)
@@ -669,20 +671,85 @@ namespace Easy_3D_Editor.ViewModels
 
             var brush = element.IsSelected ? Brushes.Green : Brushes.Blue;
 
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, 1, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 1, 2, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 2, 3, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 3, 0, xyz), brush));
+            if (element.GetType() == typeof(Cube))
+            {
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, 1, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 1, 2, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 2, 3, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 3, 0, xyz), brush));
 
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 4, 5, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 5, 6, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 6, 7, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 7, 4, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 4, 5, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 5, 6, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 6, 7, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 7, 4, xyz), brush));
 
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, 4, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 1, 5, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 2, 6, xyz), brush));
-            lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 3, 7, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, 4, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 1, 5, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 2, 6, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 3, 7, xyz), brush));
+            }
+            else if (element.GetType() == typeof(Sphere))
+            {
+                var e = (Sphere)element;
+                int f = 0;
+
+                for (int i = 1; i < e.positionPerLevelCount; ++i)
+                {
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, i, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, i, i + 1, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, i + 1, i, xyz), brush));
+
+                    f++;
+                }
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 0, e.positionPerLevelCount, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, e.positionPerLevelCount, 1, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 1, e.positionPerLevelCount, xyz), brush));
+                f++;
+
+                for (int i = 0; i < e.level - 3; ++i)
+                {
+                    var level = e.positionPerLevelCount * i + 1;
+                    for (int j = 0; j < e.positionPerLevelCount - 1; ++j)
+                    {
+                        lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 
+                            level + j, level + j + e.positionPerLevelCount, xyz), brush));
+                        lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                            level + j + e.positionPerLevelCount, level + j + e.positionPerLevelCount + 1, xyz), brush));
+                        lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                            level + j + e.positionPerLevelCount + 1, level + j + 1, xyz), brush));
+                        lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                            level + j + 1, level + j, xyz), brush));
+                        f++;
+                    }
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                        level, level + e.positionPerLevelCount, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                        level + e.positionPerLevelCount, level + e.positionPerLevelCount * 2 - 1, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                        level + e.positionPerLevelCount * 2 - 1, level + e.positionPerLevelCount - 1, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                        level + e.positionPerLevelCount - 1, level, xyz), brush));
+                    f++;
+                }
+
+
+                for (int i = e.positionCount - e.positionPerLevelCount - 1;
+                    i < e.positionCount - 1;
+                    ++i)
+                {
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, i, i + 1, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, i + 1, e.positionCount - 1, xyz), brush));
+                    lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, e.positionCount - 1, i, xyz), brush));
+                    f++;
+                }
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 
+                    e.positionCount - e.positionPerLevelCount - 1, e.positionCount - 2, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element,
+                    e.positionCount - 2, e.positionCount - 1, xyz), brush));
+                lines.Add(new KeyValuePair<Shape, Brush>(createLine(element, 
+                    e.positionCount - 1, e.positionCount - e.positionPerLevelCount - 1, xyz), brush));
+                f++;
+            }
 
             return lines;
         }

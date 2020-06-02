@@ -79,6 +79,10 @@
     <Compile Include="ViewModels\ListViewModel.cs" />
     <Compile Include="ViewModels\MapEditorViewModel.cs" />
     <Compile Include="ViewModels\ShapeViewModel.cs" />
+    <Compile Include="ViewModels\TextureViewModel.cs" />
+    <Compile Include="Views\TextureView.xaml.cs">
+      <DependentUpon>TextureView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
     </Compile>
@@ -145,6 +149,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\TextureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Input.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

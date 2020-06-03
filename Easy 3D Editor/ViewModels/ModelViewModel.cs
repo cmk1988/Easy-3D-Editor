@@ -190,8 +190,17 @@ namespace Easy_3D_Editor.ViewModels
                 if(selectedFlat != null)
                 {
                     setLines(null, selectedFlat);
+                    if(ViewManager.FileDialog(out string filename))
+                    {
+                        var vm = new TextureViewModel(filename, selectedFlat);
+                        ViewManager.ShowDialogView(typeof(TextureView), vm);
+                        if(vm.IsOK)
+                        {
 
+                        }
+                    }
                 }
+                setLines();
 
                 return;
             }

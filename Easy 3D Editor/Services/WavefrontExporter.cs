@@ -11,6 +11,12 @@ namespace Easy_3D_Editor.Services
 {
     class WavefrontExporter
     {
+        public class TextureForFlat
+        {
+            public int FlatId { get; set; }
+            public List<TextureCoordinate> Coordinates { get; set; } = new List<TextureCoordinate>();
+        }
+
         class Vertex
         {
             public int Id { get; set; }
@@ -24,7 +30,7 @@ namespace Easy_3D_Editor.Services
             }
         }
 
-        class TextureCoordinate
+        public class TextureCoordinate
         {
             public int Id { get; set; }
             public float X { get; set; }
@@ -99,6 +105,7 @@ namespace Easy_3D_Editor.Services
 
         public class FlatWithPositions
         {
+            public int FlatId { get; set; }
             public List<Position3D> Positions { get; set; } = new List<Position3D>();
         }
 
@@ -292,6 +299,7 @@ namespace Easy_3D_Editor.Services
                 if (b)
                 {
                     var f = new FlatWithPositions();
+                    f.FlatId = flats.IndexOf(flat);
                     foreach (var posi in flat.Points)
                     {
                         var vert = vertices[posi.VertexId - 1];
@@ -349,6 +357,7 @@ namespace Easy_3D_Editor.Services
                 if (b)
                 {
                     var f = new FlatWithPositions();
+                    f.FlatId = flats.IndexOf(flat);
                     foreach (var posi in flat.Points)
                     {
                         var vert = vertices[posi.VertexId - 1];
@@ -406,6 +415,7 @@ namespace Easy_3D_Editor.Services
                 if (b)
                 {
                     var f = new FlatWithPositions();
+                    f.FlatId = flats.IndexOf(flat);
                     foreach (var posi in flat.Points)
                     {
                         var vert = vertices[posi.VertexId - 1];

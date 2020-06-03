@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="TextureView" Height="auto" Width="auto">
     <Grid>
-        <Canvas x:Name="can"></Canvas>
+        <Image Source="{Binding TextureImage.Get.Source}"></Image>
+        <Canvas x:Name="can" Background="Transparent" IsHitTestVisible="False"></Canvas>
     </Grid>
 </Window>

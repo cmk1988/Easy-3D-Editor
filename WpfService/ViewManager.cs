@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace WpfServices
 {
     public class ViewManager
     {
         public static Window RootView { get; private set; }
+
+
 
         public static bool ShowDialogRootView(Type viewType, ViewModelBase viewModel)
         {
@@ -33,6 +36,24 @@ namespace WpfServices
             if (y != null)
                 view.Top = y.Value;
             view.Show();
+        }
+
+        public static bool FileDialog(out string selectedFileName, string initialDirectory = "c:\\")
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.InitialDirectory = initialDirectory;
+            openFileDialog1.Filter = "Image Files (*.png, *.jpg)|*.png;*.jpg";
+            openFileDialog1.FilterIndex = 0;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                selectedFileName = openFileDialog1.FileName;
+                return true;
+            }
+            selectedFileName = null;
+            return false;
         }
 
         static Window createView(Type viewType, ViewModelBase viewModel)

@@ -22,6 +22,12 @@ namespace Easy_3D_Editor.ViewModels
         public TextureView()
         {
             InitializeComponent();
+
+            Loaded += (x, y) =>
+            {
+                ((TextureViewModel)DataContext).Can = can;
+                ((TextureViewModel)DataContext).SetEvents();
+            };
         }
     }
 }

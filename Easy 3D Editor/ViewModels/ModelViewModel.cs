@@ -158,8 +158,9 @@ namespace Easy_3D_Editor.ViewModels
         {
             if(xy.ClickMode == CLICK_MODE.TEXTURE)
             {
-                List<FlatWithPositions> result;
-                if(xyz == 1)
+                List<FlatWithPositions> result = null;
+                FlatWithPositions selectedFlat = null;
+                if (xyz == 1)
                 {
                     result = exporter.GetFlatBetweenXY(_x, _y);
                 }
@@ -171,6 +172,27 @@ namespace Easy_3D_Editor.ViewModels
                 {
                     result = exporter.GetFlatBetweenXY(_x, _y);
                 }
+                if (result?.Count() > 1)
+                {
+                    setLines(result);
+                    var vm = new FlatListViewModel(result, x =>
+                    {
+                        selectedFlat = x;
+                        setLines(result, x); 
+                    });
+                    ViewManager.ShowDialogView(typeof(FlatListView), vm);
+                    if (!vm.IsOK)
+                        selectedFlat = null;
+                }
+                if (result?.Count() == 1)
+                    selectedFlat = result.First();
+
+                if(selectedFlat != null)
+                {
+                    setLines(null, selectedFlat);
+
+                }
+
                 return;
             }
 
@@ -281,7 +303,6 @@ namespace Easy_3D_Editor.ViewModels
         {
             if (listVm != null)
                 listVm.SetList(Elements.Get.Select(x => x.GetListElement()).ToList());
-            exporter.LoadData(Elements.Get);
         }
 
         void selectElement(int id)
@@ -842,10 +863,10 @@ namespace Easy_3D_Editor.ViewModels
                     xy.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 1),
                         Brushes.Cyan));
-                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    xz.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 2),
                         Brushes.Cyan));
-                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    yz.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 3),
                         Brushes.Cyan));
 
@@ -854,42 +875,46 @@ namespace Easy_3D_Editor.ViewModels
                         xy.Lines.Add(new KeyValuePair<Shape, Brush>
                             (createLine(flat.Positions[i], flat.Positions[i + 1], 1),
                             Brushes.Cyan));
-                        xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        xz.Lines.Add(new KeyValuePair<Shape, Brush>
                             (createLine(flat.Positions[i], flat.Positions[i + 1], 2),
                             Brushes.Cyan));
-                        xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        yz.Lines.Add(new KeyValuePair<Shape, Brush>
                             (createLine(flat.Positions[i], flat.Positions[i + 1], 3),
                             Brushes.Cyan));
                     }
                 }
+            }
 
+            if (selectedFlat != null)
+            {
                 xy.Lines.Add(new KeyValuePair<Shape, Brush>
                     (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 1),
-                    Brushes.Cyan));
-                xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    Brushes.Red));
+                xz.Lines.Add(new KeyValuePair<Shape, Brush>
                     (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 2),
-                    Brushes.Cyan));
-                xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    Brushes.Red));
+                yz.Lines.Add(new KeyValuePair<Shape, Brush>
                     (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 3),
-                    Brushes.Cyan));
+                    Brushes.Red));
 
                 for (int i = 0; i < selectedFlat.Positions.Count - 1; i++)
                 {
                     xy.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 1),
-                        Brushes.Orange));
-                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        Brushes.Red));
+                    xz.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 2),
-                        Brushes.Orange));
-                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        Brushes.Red));
+                    yz.Lines.Add(new KeyValuePair<Shape, Brush>
                         (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 3),
-                        Brushes.Orange));
+                        Brushes.Red));
                 }
             }
 
             xy.LoadCan();
             xz.LoadCan();
             yz.LoadCan();
+            exporter.LoadData(Elements.Get);
         }
 
         void drawCube(float sx, float sy, float sz, float x, float y, float z)

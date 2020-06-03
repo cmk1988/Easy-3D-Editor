@@ -427,6 +427,11 @@ namespace Easy_3D_Editor.Services
         {
             this.multiplicator = multiplicator;
 
+            flats = new List<Flat>();
+            textureCoordinates = new List<TextureCoordinate>();
+            normals = new List<Normal>();
+            vertices = new List<Vertex>();
+
             foreach (var element in elements)
             {
                 if (element.GetType() == typeof(Cube))

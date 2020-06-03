@@ -12,16 +12,12 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfServices;
 using Xml2CSharp;
+using static Easy_3D_Editor.Services.WavefrontExporter;
 
 namespace Easy_3D_Editor.ViewModels
 {
     class ModelViewModel : ViewModelBase
     {
-        public NotifiingProperty<List<Vertex>> Vertices { get; set; } = new NotifiingProperty<List<Vertex>>();
-        public NotifiingProperty<List<Vertex>> Normals { get; set; } = new NotifiingProperty<List<Vertex>>();
-        public NotifiingProperty<List<Vertex>> TexturePositions { get; set; } = new NotifiingProperty<List<Vertex>>();
-        public NotifiingProperty<List<Flat>> Flats { get; set; } = new NotifiingProperty<List<Flat>>();
-
         public NotifiingProperty<List<Element>> Elements { get; set; } = new NotifiingProperty<List<Element>>();
 
         ViewModelXY xy;
@@ -40,6 +36,9 @@ namespace Easy_3D_Editor.ViewModels
         public NotifiingProperty<Image> Image9 { get; set; } = new NotifiingProperty<Image>();
         public NotifiingProperty<Image> Image10 { get; set; } = new NotifiingProperty<Image>();
         public NotifiingProperty<Image> Image11 { get; set; } = new NotifiingProperty<Image>();
+        public NotifiingProperty<Image> Image12 { get; set; } = new NotifiingProperty<Image>();
+        public NotifiingProperty<Image> Image13 { get; set; } = new NotifiingProperty<Image>();
+        public NotifiingProperty<Image> Image14 { get; set; } = new NotifiingProperty<Image>();
 
         public Command InsertCommand { get; set; } = new Command();
         public Command SelectCommand { get; set; } = new Command();
@@ -54,10 +53,16 @@ namespace Easy_3D_Editor.ViewModels
         public Command ExportCommand { get; set; } = new Command();
         public Command MoveCommand { get; set; } = new Command();
         public Command ResizeCommand { get; set; } = new Command();
+        public Command BoneCommand { get; set; } = new Command();
+        public Command TextureCommand { get; set; } = new Command();
+
+        WavefrontExporter exporter;
 
         public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz)
         {
             Elements.Get = new List<Element>();
+
+            exporter = new WavefrontExporter(Elements.Get);
 
             this.xy = xy;
             this.xz = xz;
@@ -76,6 +81,8 @@ namespace Easy_3D_Editor.ViewModels
             ExportCommand.ExecuteFunc = x => export();
             MoveCommand.ExecuteFunc = x => move();
             ResizeCommand.ExecuteFunc = x => resize();
+            BoneCommand.ExecuteFunc = x => bone();
+            TextureCommand.ExecuteFunc = x => texture();
 
             Image0.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.einfügen);
             Image1.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.auswahl2);
@@ -89,6 +96,9 @@ namespace Easy_3D_Editor.ViewModels
             Image9.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.export);
             Image10.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.schieben);
             Image11.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.größe_ändern);
+            Image12.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.load);
+            Image13.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.texture);
+            Image14.Get = ImageHelper.ConvertImageToWpfImage(Resources.Resource.bone);
 
             this.xy.DrawCubeAction = drawCube;
             this.xz.DrawCubeAction = drawCube;
@@ -117,6 +127,20 @@ namespace Easy_3D_Editor.ViewModels
             SetPropertyChangeForAll();
         }
 
+        private void texture()
+        {
+            xy.ClickMode = CLICK_MODE.TEXTURE;
+            xz.ClickMode = CLICK_MODE.TEXTURE;
+            yz.ClickMode = CLICK_MODE.TEXTURE;
+        }
+
+        private void bone()
+        {
+            xy.ClickMode = CLICK_MODE.NEW_BONE;
+            xz.ClickMode = CLICK_MODE.NEW_BONE;
+            yz.ClickMode = CLICK_MODE.NEW_BONE;
+        }
+
         void clearSelection(bool clearAll = true)
         {
             Elements.Get.ForEach(e =>
@@ -132,6 +156,24 @@ namespace Easy_3D_Editor.ViewModels
 
         void select(int xyz, int _x, int _y)
         {
+            if(xy.ClickMode == CLICK_MODE.TEXTURE)
+            {
+                List<FlatWithPositions> result;
+                if(xyz == 1)
+                {
+                    result = exporter.GetFlatBetweenXY(_x, _y);
+                }
+                else if (xyz == 2)
+                {
+                    result = exporter.GetFlatBetweenXY(_x, _y);
+                }
+                else if (xyz == 3)
+                {
+                    result = exporter.GetFlatBetweenXY(_x, _y);
+                }
+                return;
+            }
+
             clearSelection(false);
             var selectedElement = Elements.Get.FirstOrDefault(x => x.IsSelected);
             if (selectedElement == null)
@@ -239,6 +281,7 @@ namespace Easy_3D_Editor.ViewModels
         {
             if (listVm != null)
                 listVm.SetList(Elements.Get.Select(x => x.GetListElement()).ToList());
+            exporter.LoadData(Elements.Get);
         }
 
         void selectElement(int id)
@@ -264,8 +307,7 @@ namespace Easy_3D_Editor.ViewModels
             ViewManager.ShowDialogView(typeof(Input), vm);
             if (vm.IsOK)
             {
-                var exporter = new WavefrontExporter(vm.Output.Get + ".obj", Elements.Get);
-                exporter.Export();
+                exporter.Export(vm.Output.Get + ".obj");
             }
         }
 
@@ -628,41 +670,44 @@ namespace Easy_3D_Editor.ViewModels
             Elements.Get.Add(cube);
         }
 
-
-
-        Line createLine(Element element, int i, int j, int xyz)
+        Line createLine(Position3D a, Position3D b, int xyz)
         {
             if (xyz == 1)
             {
                 return new Line
                 {
-                    X1 = element.Positions[i].X,
-                    Y1 = element.Positions[i].Y,
-                    X2 = element.Positions[j].X,
-                    Y2 = element.Positions[j].Y
+                    X1 = a.X,
+                    Y1 = a.Y,
+                    X2 = b.X,
+                    Y2 = b.Y
                 };
             }
             else if (xyz == 2)
             {
                 return new Line
                 {
-                    X1 = element.Positions[i].X,
-                    Y1 = element.Positions[i].Z,
-                    X2 = element.Positions[j].X,
-                    Y2 = element.Positions[j].Z
+                    X1 = a.X,
+                    Y1 = a.Z,
+                    X2 = b.X,
+                    Y2 = b.Z
                 };
             }
             else if (xyz == 3)
             {
                 return new Line
                 {
-                    X1 = element.Positions[i].Z,
-                    Y1 = element.Positions[i].Y,
-                    X2 = element.Positions[j].Z,
-                    Y2 = element.Positions[j].Y
+                    X1 = a.Z,
+                    Y1 = a.Y,
+                    X2 = b.Z,
+                    Y2 = b.Y
                 };
             }
             return null;
+        }
+
+        Line createLine(Element element, int i, int j, int xyz)
+        {
+            return createLine(element.Positions[i], element.Positions[j], xyz);
         }
 
         List<KeyValuePair<Shape, Brush>> addLines(Element element, int xyz)
@@ -754,7 +799,7 @@ namespace Easy_3D_Editor.ViewModels
             return lines;
         }
 
-        void setLines()
+        void setLines(List<FlatWithPositions> flats = null, FlatWithPositions selectedFlat = null)
         {
             xy.Lines = new List<KeyValuePair<Shape, Brush>>();
             xz.Lines = new List<KeyValuePair<Shape, Brush>>();
@@ -789,6 +834,58 @@ namespace Easy_3D_Editor.ViewModels
             xy.Lines.AddRange(lines21);
             xz.Lines.AddRange(lines22);
             yz.Lines.AddRange(lines23);
+
+            if (flats != null)
+            {
+                foreach (var flat in flats)
+                {
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 1),
+                        Brushes.Cyan));
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 2),
+                        Brushes.Cyan));
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(flat.Positions[0], flat.Positions[flat.Positions.Count - 1], 3),
+                        Brushes.Cyan));
+
+                    for (int i = 0; i < flat.Positions.Count - 1; i++)
+                    {
+                        xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                            (createLine(flat.Positions[i], flat.Positions[i + 1], 1),
+                            Brushes.Cyan));
+                        xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                            (createLine(flat.Positions[i], flat.Positions[i + 1], 2),
+                            Brushes.Cyan));
+                        xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                            (createLine(flat.Positions[i], flat.Positions[i + 1], 3),
+                            Brushes.Cyan));
+                    }
+                }
+
+                xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 1),
+                    Brushes.Cyan));
+                xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 2),
+                    Brushes.Cyan));
+                xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                    (createLine(selectedFlat.Positions[0], selectedFlat.Positions[selectedFlat.Positions.Count - 1], 3),
+                    Brushes.Cyan));
+
+                for (int i = 0; i < selectedFlat.Positions.Count - 1; i++)
+                {
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 1),
+                        Brushes.Orange));
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 2),
+                        Brushes.Orange));
+                    xy.Lines.Add(new KeyValuePair<Shape, Brush>
+                        (createLine(selectedFlat.Positions[i], selectedFlat.Positions[i + 1], 3),
+                        Brushes.Orange));
+                }
+            }
 
             xy.LoadCan();
             xz.LoadCan();

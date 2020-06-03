@@ -20,10 +20,12 @@ namespace Easy_3D_Editor.ViewModels
     {
         NEW_CUBE,
         NEW_SPHERE,
+        NEW_BONE,
         SELECT_AREA,
         SELECT_SINGLE,
         RESIZE,
-        MOVE
+        MOVE,
+        TEXTURE
     }
 
     class ViewModelXY : ViewModelBase
@@ -161,7 +163,8 @@ namespace Easy_3D_Editor.ViewModels
                             startPosition = b.GetPosition(Can.Get);
                         isStarted = true;
                     }
-                    else if (ClickMode == CLICK_MODE.SELECT_SINGLE)
+                    else if (ClickMode == CLICK_MODE.SELECT_SINGLE 
+                        || ClickMode == CLICK_MODE.TEXTURE)
                     {
                         select(b);
                     }

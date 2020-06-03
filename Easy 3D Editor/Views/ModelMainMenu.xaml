@@ -7,9 +7,11 @@
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
-        Title="" Height="910" Width="80">
+        Title="" Height="700" Width="60">
     <Grid Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -61,7 +63,13 @@
             <Image Source="{Binding Image11.Get.Source}"></Image>
         </Button>
         <Button Grid.Row="12" Command="{Binding LoadCommand}">
-            <Image Source="{Binding Image7.Get.Source}"></Image>
+            <Image Source="{Binding Image12.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="13" Command="{Binding TextureCommand}">
+            <Image Source="{Binding Image13.Get.Source}"></Image>
+        </Button>
+        <Button Grid.Row="14" Command="{Binding BoneCommand}">
+            <Image Source="{Binding Image14.Get.Source}"></Image>
         </Button>
     </Grid>
 </Window>

@@ -36,6 +36,24 @@ namespace Easy_3D_Editor.Services
             }
         }
 
+        class fPoint
+        {
+            public float x;
+            public float y;
+
+            public fPoint(float x, float y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+
+            public fPoint(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
         class Normal : Vertex
         {
             public override string GetLine()
@@ -44,7 +62,7 @@ namespace Easy_3D_Editor.Services
             }
         }
 
-        class FlatPoint
+        public class FlatPoint
         {
             public int VertexId { get; set; }
             public int TextureId { get; set; } = 0;
@@ -58,9 +76,15 @@ namespace Easy_3D_Editor.Services
             }
         }
 
-        class Flat
+        public class Flat
         {
+            public int ModelId { get; }
             public List<FlatPoint> Points { get; set; } = new List<FlatPoint>();
+
+            public Flat(int id)
+            {
+                ModelId = id;
+            }
 
             public string GetLine()
             {
@@ -73,8 +97,11 @@ namespace Easy_3D_Editor.Services
             }
         }
 
+        public class FlatWithPositions
+        {
+            public List<Position3D> Positions { get; set; } = new List<Position3D>();
+        }
 
-        string filename;
         float multiplicator;
 
         List<Vertex> vertices = new List<Vertex>();
@@ -139,9 +166,9 @@ namespace Easy_3D_Editor.Services
             return i;
         }
 
-        void addFlat(Position3D a, Position3D b, Position3D c, Position3D d = null)
+        void addFlat(int id, Position3D a, Position3D b, Position3D c, Position3D d = null)
         {
-            var flat = new Flat();
+            var flat = new Flat(id);
 
             flat.Points.Add(new FlatPoint
             {
@@ -200,9 +227,204 @@ namespace Easy_3D_Editor.Services
             }
         }
 
-        public WavefrontExporter(string filename, IEnumerable<Element> elements, float multiplicator = 0.01f)
+        public WavefrontExporter(IEnumerable<Element> elements, float multiplicator = 0.01f)
         {
-            this.filename = filename;
+            LoadData(elements, multiplicator);
+        }
+
+        float sign(fPoint p1, fPoint p2, fPoint p3)
+        {
+            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+        }
+
+        bool PointInTriangle(fPoint pt, fPoint v1, fPoint v2, fPoint v3)
+        {
+            float d1, d2, d3;
+            bool has_neg, has_pos;
+
+            d1 = sign(pt, v1, v2);
+            d2 = sign(pt, v2, v3);
+            d3 = sign(pt, v3, v1);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            return !(has_neg && has_pos);
+        }
+
+        public List<FlatWithPositions> GetFlatBetweenXY(int x, int y)
+        {
+            var result = new List<FlatWithPositions>();
+            var p = new fPoint(x * multiplicator, y * multiplicator * -1.0f);
+
+            foreach (var flat in flats)
+            {
+                bool b = false;
+                if(flat.Points.Count() == 4)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    var v4 = vertices[flat.Points[3].VertexId - 1];
+
+                    b = PointInTriangle(p,
+                            new fPoint(v1.X, v1.Y),
+                            new fPoint(v2.X, v2.Y),
+                            new fPoint(v3.X, v3.Y)
+                            ) || 
+                        PointInTriangle(p,
+                            new fPoint(v3.X, v3.Y),
+                            new fPoint(v4.X, v4.Y),
+                            new fPoint(v1.X, v1.Y)
+                            );
+                }
+                else if(flat.Points.Count() == 3)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    b = PointInTriangle(p,
+                            new fPoint(v1.X, v1.Y),
+                            new fPoint(v2.X, v2.Y),
+                            new fPoint(v3.X, v3.Y)
+                            );
+                }
+                if (b)
+                {
+                    var f = new FlatWithPositions();
+                    foreach (var posi in flat.Points)
+                    {
+                        var vert = vertices[posi.VertexId - 1];
+                        f.Positions.Add(new Position3D
+                        {
+                            X = vert.X / multiplicator,
+                            Y = vert.Y / multiplicator * -1.0f,
+                            Z = vert.Z / multiplicator,
+                        });
+                    }
+                    result.Add(f);
+                }
+            }
+
+            return result;
+        }
+
+        public List<FlatWithPositions> GetFlatBetweenXZ(int x, int z)
+        {
+            var result = new List<FlatWithPositions>();
+            var p = new fPoint(x * multiplicator, z * multiplicator);
+
+            foreach (var flat in flats)
+            {
+                bool b = false;
+                if (flat.Points.Count() == 4)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    var v4 = vertices[flat.Points[3].VertexId - 1];
+
+                    b = PointInTriangle(p,
+                            new fPoint(v1.X, v1.Z),
+                            new fPoint(v2.X, v2.Z),
+                            new fPoint(v3.X, v3.Z)
+                            ) &&
+                        PointInTriangle(p,
+                            new fPoint(v3.X, v3.Z),
+                            new fPoint(v4.X, v4.Z),
+                            new fPoint(v1.X, v1.Z)
+                            );
+                }
+                else if (flat.Points.Count() == 3)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    b = PointInTriangle(p,
+                            new fPoint(v1.X, v1.Z),
+                            new fPoint(v2.X, v2.Z),
+                            new fPoint(v3.X, v3.Z)
+                            );
+                }
+                if (b)
+                {
+                    var f = new FlatWithPositions();
+                    foreach (var posi in flat.Points)
+                    {
+                        var vert = vertices[posi.VertexId - 1];
+                        f.Positions.Add(new Position3D
+                        {
+                            X = vert.X / multiplicator,
+                            Y = vert.Y / multiplicator * -1.0f,
+                            Z = vert.Z / multiplicator,
+                        });
+                    }
+                    result.Add(f);
+                }
+            }
+
+            return result;
+        }
+
+        public List<FlatWithPositions> GetFlatBetweenZY(int z, int y)
+        {
+            var result = new List<FlatWithPositions>();
+            var p = new fPoint(z * multiplicator, y * multiplicator);
+
+            foreach (var flat in flats)
+            {
+                bool b = false;
+                if (flat.Points.Count() == 4)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    var v4 = vertices[flat.Points[3].VertexId - 1];
+
+                    b = PointInTriangle(p,
+                            new fPoint(v1.Z, v1.Y),
+                            new fPoint(v2.Z, v2.Y),
+                            new fPoint(v3.Z, v3.Y)
+                            ) &&
+                        PointInTriangle(p,
+                            new fPoint(v3.Z, v3.Y),
+                            new fPoint(v4.Z, v4.Y),
+                            new fPoint(v1.Z, v1.Y)
+                            );
+                }
+                else if (flat.Points.Count() == 3)
+                {
+                    var v1 = vertices[flat.Points[0].VertexId - 1];
+                    var v2 = vertices[flat.Points[1].VertexId - 1];
+                    var v3 = vertices[flat.Points[2].VertexId - 1];
+                    b = PointInTriangle(p,
+                            new fPoint(v1.Z, v1.Y),
+                            new fPoint(v2.Z, v2.Y),
+                            new fPoint(v3.Z, v3.Y)
+                            );
+                }
+                if (b)
+                {
+                    var f = new FlatWithPositions();
+                    foreach (var posi in flat.Points)
+                    {
+                        var vert = vertices[posi.VertexId - 1];
+                        f.Positions.Add(new Position3D
+                        {
+                            X = vert.X / multiplicator,
+                            Y = vert.Y / multiplicator * -1.0f,
+                            Z = vert.Z / multiplicator,
+                        });
+                    }
+                    result.Add(f);
+                }
+            }
+
+            return result;
+        }
+
+        public void LoadData(IEnumerable<Element> elements, float multiplicator = 0.01f)
+        {
             this.multiplicator = multiplicator;
 
             foreach (var element in elements)
@@ -223,12 +445,12 @@ namespace Easy_3D_Editor.Services
         {
             if (element.Positions.Count() != 8)
                 throw new Exception("Corrupted cube! element.Positions.Count() != 8");
-            addFlat(element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3]);
-            addFlat(element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7]);
-            addFlat(element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1]);
-            addFlat(element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2]);
-            addFlat(element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3]);
-            addFlat(element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2]);
+            addFlat(element.Id, element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3]);
+            addFlat(element.Id, element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7]);
+            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1]);
+            addFlat(element.Id, element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2]);
+            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3]);
+            addFlat(element.Id, element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2]);
         }
 
         void addFlatsForSphere(Sphere element)
@@ -238,12 +460,14 @@ namespace Easy_3D_Editor.Services
             for (int i = 1; i < element.positionPerLevelCount; ++i)
             {
                 addFlat(
+                    element.Id,
                     element.Positions[0], 
                     element.Positions[i], 
                     element.Positions[i + 1]);
                 f++;
             }
             addFlat(
+                element.Id,
                 element.Positions[0], 
                 element.Positions[element.positionPerLevelCount], 
                 element.Positions[1]);
@@ -255,6 +479,7 @@ namespace Easy_3D_Editor.Services
                 for (int j = 0; j < element.positionPerLevelCount - 1; ++j)
                 {
                     addFlat(
+                        element.Id,
                         element.Positions[level + j],
                         element.Positions[level + j + element.positionPerLevelCount],
                         element.Positions[level + j + element.positionPerLevelCount + 1],
@@ -262,6 +487,7 @@ namespace Easy_3D_Editor.Services
                     f++;
                 }
                 addFlat(
+                    element.Id,
                     element.Positions[level],
                     element.Positions[level + element.positionPerLevelCount],
                     element.Positions[level + element.positionPerLevelCount * 2 - 1],
@@ -275,19 +501,21 @@ namespace Easy_3D_Editor.Services
                 ++i)
             {
                 addFlat(
+                    element.Id,
                     element.Positions[i],
                     element.Positions[i + 1],
                     element.Positions[element.positionCount - 1]);
                 f++;
             }
             addFlat(
+                element.Id,
                 element.Positions[element.positionCount - element.positionPerLevelCount - 1],
                 element.Positions[element.positionCount - 2],
                 element.Positions[element.positionCount - 1]);
             f++;
         }
 
-        public void Export()
+        public void Export(string filename)
         {
             var content = $"# created by CMK Easy 3D Editor\r\n\r\no {filename}\r\n\r\n";
 

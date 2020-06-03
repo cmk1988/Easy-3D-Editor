@@ -76,10 +76,14 @@
     <Compile Include="Services\Serializer.cs" />
     <Compile Include="Services\WavefrontExporter.cs" />
     <Compile Include="ViewModels\DataInputViewModel.cs" />
+    <Compile Include="ViewModels\FlatListViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
     <Compile Include="ViewModels\MapEditorViewModel.cs" />
     <Compile Include="ViewModels\ShapeViewModel.cs" />
     <Compile Include="ViewModels\TextureViewModel.cs" />
+    <Compile Include="Views\FlatListView.xaml.cs">
+      <DependentUpon>FlatListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TextureView.xaml.cs">
       <DependentUpon>TextureView.xaml</DependentUpon>
     </Compile>
@@ -149,6 +153,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\FlatListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TextureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -230,6 +238,11 @@
     <Resource Include="Resources\größe ändern2.png" />
     <Resource Include="Resources\schieben.png" />
     <Resource Include="Resources\schieben2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\bone.png" />
+    <Resource Include="Resources\load.png" />
+    <Resource Include="Resources\texture.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

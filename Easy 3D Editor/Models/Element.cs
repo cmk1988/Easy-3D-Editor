@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace Easy_3D_Editor.Models
 {
@@ -37,6 +38,7 @@ namespace Easy_3D_Editor.Models
         public string Text { get; set; }
         public Position3D[] Positions { get; set; }
         public bool IsSelected { get; set; }
+        public int flatCount { get; protected set; }
 
         public Element()
         {
@@ -63,6 +65,7 @@ namespace Easy_3D_Editor.Models
         {
             Text = $"Id: {Id} (Cube)";
             Positions = new Position3D[8];
+            flatCount = 6;
             for (int i = 0; i < 8; i++)
             {
                 Positions[i] = new Position3D();
@@ -76,7 +79,6 @@ namespace Easy_3D_Editor.Models
         public int level { get; }
         public int positionCount { get; }
         public int positionPerLevelCount { get; }
-        public int flatCount { get; }
 
         public Sphere(int level) : base()
         {
@@ -100,7 +102,7 @@ namespace Easy_3D_Editor.Models
     [Serializable]
     class Rectangle : Element
     {
-        public Rectangle()
+        public Rectangle() : base()
         {
             Text = $"Id: {Id} (Rectangle)";
             Positions = new Position3D[3];
@@ -110,10 +112,32 @@ namespace Easy_3D_Editor.Models
     [Serializable]
     class Plane : Element
     {
-        public Plane()
+        public Plane() : base()
         {
             Text = $"Id: {Id} (Plane)";
             Positions = new Position3D[4];
+        }
+    }
+
+    class Bone : Element
+    {
+        public List<Element> Elements { get; set; } = new List<Element>();
+        public Matrix3D Matrix { get; set; }
+        public int ParentBone { get; set; } = 0;
+
+        public Bone() : base()
+        {
+            Text = $"Id: {Id} (Bone) Parent = {ParentBone}";
+            Positions = new Position3D[2];
+            flatCount = 0;
+
+            Matrix = new Matrix3D
+             (
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 1.0
+            );
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,13 @@ namespace Easy_3D_Editor.Models
         public float Z { get; set; }
 
         public bool IsSelected { get; set; }
+    }
+
+    [Serializable]
+    public class Position2D
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
     }
 
     [Serializable]
@@ -79,6 +87,7 @@ namespace Easy_3D_Editor.Models
         public int level { get; }
         public int positionCount { get; }
         public int positionPerLevelCount { get; }
+        public bool CalcRoundNormals { get; set; }
 
         public Sphere(int level) : base()
         {
@@ -121,6 +130,8 @@ namespace Easy_3D_Editor.Models
 
     class Bone : Element
     {
+        static int bid = 1;
+        public int BoneId { get; }
         public List<Element> Elements { get; set; } = new List<Element>();
         public Matrix3D Matrix { get; set; }
         public int ParentBone { get; set; } = 0;
@@ -130,6 +141,7 @@ namespace Easy_3D_Editor.Models
             Text = $"Id: {Id} (Bone) Parent = {ParentBone}";
             Positions = new Position3D[2];
             flatCount = 0;
+            BoneId = ++bid;
 
             Matrix = new Matrix3D
              (

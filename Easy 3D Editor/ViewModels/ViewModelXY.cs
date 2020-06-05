@@ -46,6 +46,7 @@ namespace Easy_3D_Editor.ViewModels
         public Action AddAction { get; set; }
         public Action<int, int, int> SelectAction { get; set; }
         public Action<int> LoadedAction { get; set; }
+        public Action<int, int, int, int> BoneAction { get; set; }
 
         public Command NewCube { get; set; } = new Command();
         public Command RasterPlus { get; set; } = new Command();
@@ -175,6 +176,11 @@ namespace Easy_3D_Editor.ViewModels
                         if (!isStarted)
                             startPosition = b.GetPosition(Can.Get);
                         isStarted = true;
+                    }
+                    else if(ClickMode == CLICK_MODE.NEW_BONE)
+                    {
+                        var posi = b.GetPosition(Can.Get);
+                        BoneAction(xyz, Raster, (int)posi.X, (int)posi.Y);
                     }
                 };
 

@@ -71,6 +71,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\CanvasDrawer.cs" />
+    <Compile Include="Services\ConfigLoader.cs" />
     <Compile Include="Services\ImageHelper.cs" />
     <Compile Include="Services\PositionManager.cs" />
     <Compile Include="Services\Serializer.cs" />

@@ -25,6 +25,8 @@ namespace Easy_3D_Editor.Services
             public float Y { get; set; }
             public float Z { get; set; }
 
+            public int BoneId { get; set; } = 0;
+
             public virtual string GetLine()
             {
                 return $"v {X} {Y} {Z}\r\n".Replace(",", ".");
@@ -143,6 +145,11 @@ namespace Easy_3D_Editor.Services
             return i;
         }
 
+        int addTexture(Position2D posi)
+        {
+            return addTexture(posi.X, posi.Y);
+        }
+
         int addTexture(float x, float y)
         {
             var texture = textureCoordinates.FirstOrDefault(v => v.X == x && v.Y == y);
@@ -203,6 +210,92 @@ namespace Easy_3D_Editor.Services
             flats.Add(flat);
         }
 
+        void addFlat(int id, Position3D a, Position3D b, Position3D c, Position2D ta, Position2D tb, Position2D tc)
+        {
+            var flat = new Flat(id);
+
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(a.X, a.Y, a.Z),
+                TextureId = addTexture(ta)
+            });
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(b.X, b.Y, b.Z),
+                TextureId = addTexture(tb)
+            });
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(c.X, c.Y, c.Z),
+                TextureId = addTexture(tc)
+            });
+
+            flats.Add(flat);
+        }
+
+        void addFlat(int id, Position3D a, Position3D b, Position3D c, Position3D d,
+            Position2D ta, Position2D tb, Position2D tc, Position2D td)
+        {
+            var flat = new Flat(id);
+
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(a.X, a.Y, a.Z),
+                TextureId = addTexture(ta)
+            });
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(b.X, b.Y, b.Z),
+                TextureId = addTexture(tb)
+            });
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(c.X, c.Y, c.Z),
+                TextureId = addTexture(tc)
+            });
+            flat.Points.Add(new FlatPoint
+            {
+                VertexId = addVertex(d.X, d.Y, d.Z),
+                TextureId = addTexture(td)
+            });
+
+            flats.Add(flat);
+        }
+
+        public void CalcRoundNormals(int id)
+        {
+            var _flats = flats.Where(x => x.ModelId == id).ToList();
+
+            var _vertices = flats.SelectMany(x => x.Points.Select(y => y.VertexId)).Distinct().ToList();
+
+
+            foreach (var vertex in _vertices)
+            {
+                var _normals = _flats.SelectMany(o => 
+                    o.Points.Where(
+                        b => b.VertexId == vertex)
+                    .Select(b => b.NormalId))
+                    .ToList();
+
+                var x = 0.0f;
+                var y = 0.0f;
+                var z = 0.0f;
+
+
+                foreach (var normal in _normals)
+                {
+                    x += normals[normal - 1].X;
+                    y += normals[normal - 1].Y;
+                    z += normals[normal - 1].Z;
+                }
+
+                _flats.SelectMany(o => o.Points)
+                    .Where(o => o.VertexId == vertex)
+                    .ToList()
+                    .ForEach(o => o.NormalId = addNormal(x, y, z));
+            }
+        }
+
         void calcFlatNormals()
         {
             foreach (var flat in flats)
@@ -244,9 +337,9 @@ namespace Easy_3D_Editor.Services
         float offsetZ;
 
         public WavefrontExporter(
-            IEnumerable<Element> elements, 
-            float multiplicator = 0.01f, 
-            float offsetX = 0.0f, 
+            IEnumerable<Element> elements,
+            float multiplicator = 0.01f,
+            float offsetX = 0.0f,
             float offsetY = 0.0f,
             float offsetZ = 0.0f)
         {
@@ -289,13 +382,12 @@ namespace Easy_3D_Editor.Services
                     SetTextureforFlat(flat.Id, texture);
                 }
             }
-            else if(element.GetType() == typeof(Sphere))
+            else if (element.GetType() == typeof(Sphere))
             {
                 var sphere = (Sphere)element;
+                var curY = 0.0f;
                 foreach (var posi in element.Positions)
                 {
-                    float alpha = (float)(2 * Math.PI / (sphere.positionPerLevelCount));
-                    //posi.
                 }
             }
         }
@@ -326,7 +418,7 @@ namespace Easy_3D_Editor.Services
             foreach (var flat in flats)
             {
                 bool b = false;
-                if(flat.Points.Count() == 4)
+                if (flat.Points.Count() == 4)
                 {
                     var v1 = vertices[flat.Points[0].VertexId - 1];
                     var v2 = vertices[flat.Points[1].VertexId - 1];
@@ -337,14 +429,14 @@ namespace Easy_3D_Editor.Services
                             new fPoint(v1.X, v1.Y),
                             new fPoint(v2.X, v2.Y),
                             new fPoint(v3.X, v3.Y)
-                            ) || 
+                            ) ||
                         PointInTriangle(p,
                             new fPoint(v3.X, v3.Y),
                             new fPoint(v4.X, v4.Y),
                             new fPoint(v1.X, v1.Y)
                             );
                 }
-                else if(flat.Points.Count() == 3)
+                else if (flat.Points.Count() == 3)
                 {
                     var v1 = vertices[flat.Points[0].VertexId - 1];
                     var v2 = vertices[flat.Points[1].VertexId - 1];
@@ -516,6 +608,9 @@ namespace Easy_3D_Editor.Services
                 }
             }
             calcFlatNormals();
+            elements.Where(x => x.GetType() == typeof(Sphere) && ((Sphere)x).CalcRoundNormals)
+                .ToList()
+                .ForEach(x => CalcRoundNormals(x.Id));
         }
 
         void addFlatsForCube(Cube element)
@@ -534,20 +629,68 @@ namespace Easy_3D_Editor.Services
         {
             int f = 0;
 
+            float alpha = 1.0f / element.level;
+            float beta = 1.0f / element.positionPerLevelCount;
+
+            Position2D texPosi1;
+            Position2D texPosi2;
+            Position2D texPosi3;
+            Position2D texPosi4;
+
             for (int i = 1; i < element.positionPerLevelCount; ++i)
             {
+                texPosi1 = new Position2D
+                {
+                    X = 0.5f,
+                    Y = 0.0f
+                };
+                texPosi2 = new Position2D
+                {
+                    X = beta * (i-1),
+                    Y = alpha
+                };
+                texPosi3 = new Position2D
+                {
+                    X = beta * (i),
+                    Y = alpha
+                };
+
                 addFlat(
                     element.Id,
-                    element.Positions[0], 
-                    element.Positions[i], 
-                    element.Positions[i + 1]);
+                    element.Positions[0],
+                    element.Positions[i],
+                    element.Positions[i + 1],
+                    texPosi1,
+                    texPosi2,
+                    texPosi3);
+
                 f++;
             }
+
+            texPosi1 = new Position2D
+            {
+                X = 0.5f,
+                Y = 0.0f
+            };
+            texPosi2 = new Position2D
+            {
+                X = beta * (element.positionPerLevelCount - 1),
+                Y = alpha
+            };
+            texPosi3 = new Position2D
+            {
+                X = beta * element.positionPerLevelCount,
+                Y = alpha
+            };
+
             addFlat(
                 element.Id,
-                element.Positions[0], 
-                element.Positions[element.positionPerLevelCount], 
-                element.Positions[1]);
+                element.Positions[0],
+                element.Positions[element.positionPerLevelCount],
+                element.Positions[1],
+                texPosi1,
+                texPosi2,
+                texPosi3);
             f++;
 
             for (int i = 0; i < element.level - 3; ++i)
@@ -555,40 +698,131 @@ namespace Easy_3D_Editor.Services
                 var level = element.positionPerLevelCount * i + 1;
                 for (int j = 0; j < element.positionPerLevelCount - 1; ++j)
                 {
+
+                    texPosi1 = new Position2D
+                    {
+                        X = beta * (j),
+                        Y = alpha * (i + 1)
+                    };
+                    texPosi2 = new Position2D
+                    {
+                        X = beta * (j),
+                        Y = alpha * (i + 2)
+                    };
+                    texPosi3 = new Position2D
+                    {
+                        X = beta * (j + 1),
+                        Y = alpha * (i + 2)
+                    };
+                    texPosi4 = new Position2D
+                    {
+                        X = beta * (j + 1),
+                        Y = alpha * (i + 1)
+                    };
+
                     addFlat(
                         element.Id,
                         element.Positions[level + j],
                         element.Positions[level + j + element.positionPerLevelCount],
                         element.Positions[level + j + element.positionPerLevelCount + 1],
-                       element.Positions[level + j + 1]);
+                        element.Positions[level + j + 1],
+                        texPosi1,
+                        texPosi2,
+                        texPosi3,
+                        texPosi4);
                     f++;
                 }
+
+                texPosi1 = new Position2D
+                {
+                    X = beta * element.positionPerLevelCount,
+                    Y = alpha * (i + 1)
+                };
+                texPosi2 = new Position2D
+                {
+                    X = beta * element.positionPerLevelCount,
+                    Y = alpha * (i + 2)
+                };
+                texPosi3 = new Position2D
+                {
+                    X = beta * (element.positionPerLevelCount - 1),
+                    Y = alpha * (i + 2)
+                };
+                texPosi4 = new Position2D
+                {
+                    X = beta * (element.positionPerLevelCount - 1),
+                    Y = alpha * (i + 1)
+                };
+
                 addFlat(
                     element.Id,
                     element.Positions[level],
                     element.Positions[level + element.positionPerLevelCount],
                     element.Positions[level + element.positionPerLevelCount * 2 - 1],
-                   element.Positions[level + element.positionPerLevelCount - 1]);
+                    element.Positions[level + element.positionPerLevelCount - 1],
+                    texPosi1,
+                    texPosi2,
+                    texPosi3,
+                    texPosi4);
                 f++;
             }
 
-
-            for (int i = element.positionCount - element.positionPerLevelCount - 1; 
-                i < element.positionCount - 1; 
+            var tx = 0;
+            for (int i = element.positionCount - element.positionPerLevelCount - 1;
+                i < element.positionCount - 1;
                 ++i)
             {
+                texPosi1 = new Position2D
+                {
+                    X = beta * tx,
+                    Y = alpha * (i + 1)
+                };
+                texPosi2 = new Position2D
+                {
+                    X = beta * (tx + 1),
+                    Y = alpha * (i + 1)
+                };
+                texPosi3 = new Position2D
+                {
+                    X = 0.5f,
+                    Y = alpha * element.level
+                };
+
                 addFlat(
                     element.Id,
                     element.Positions[i],
                     element.Positions[i + 1],
-                    element.Positions[element.positionCount - 1]);
+                    element.Positions[element.positionCount - 1],
+                    texPosi1,
+                    texPosi2,
+                    texPosi3);
                 f++;
+                tx++;
             }
+            texPosi1 = new Position2D
+            {
+                X = beta * tx,
+                Y = alpha * (element.positionPerLevelCount - 1)
+            };
+            texPosi2 = new Position2D
+            {
+                X = beta * (tx + 1),
+                Y = alpha * (element.positionPerLevelCount - 1)
+            };
+            texPosi3 = new Position2D
+            {
+                X = 0.5f,
+                Y = alpha * element.level
+            };
+
             addFlat(
                 element.Id,
                 element.Positions[element.positionCount - element.positionPerLevelCount - 1],
                 element.Positions[element.positionCount - 2],
-                element.Positions[element.positionCount - 1]);
+                element.Positions[element.positionCount - 1],
+                texPosi1,
+                texPosi2,
+                texPosi3);
             f++;
         }
 
@@ -608,7 +842,7 @@ namespace Easy_3D_Editor.Services
             foreach (var flat in flats)
                 content += flat.GetLine();
 
-            File.WriteAllText(filename, content);
+            File.WriteAllText(ConfigLoader.Instance.Config.OutputPath + filename, content);
         }
     }
 }

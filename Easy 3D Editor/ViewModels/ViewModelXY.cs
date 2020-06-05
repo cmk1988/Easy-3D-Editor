@@ -45,6 +45,7 @@ namespace Easy_3D_Editor.ViewModels
         public Action<int, int, int, int, int> ResizeAction { get; set; }
         public Action AddAction { get; set; }
         public Action<int, int, int> SelectAction { get; set; }
+        public Action<int> LoadedAction { get; set; }
 
         public Command NewCube { get; set; } = new Command();
         public Command RasterPlus { get; set; } = new Command();
@@ -209,6 +210,7 @@ namespace Easy_3D_Editor.ViewModels
                 };
 
                 loaded = true;
+                LoadedAction(xyz);
             }
         }
 
@@ -365,11 +367,6 @@ namespace Easy_3D_Editor.ViewModels
             height = height - height % Raster;
             //DrawRectangle(_x, _y, width, height);
             NewCubeAction(xyz, _x, _y, width, height, Raster);
-        }
-
-        public void DrawCube(int x, int y, int z)
-        {
-
         }
 
         void newCube()

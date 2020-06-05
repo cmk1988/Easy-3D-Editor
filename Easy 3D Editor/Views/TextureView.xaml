@@ -7,7 +7,19 @@
         mc:Ignorable="d"
         Title="TextureView" Height="auto" Width="auto">
     <Grid>
-        <Image Source="{Binding TextureImage.Get.Source}"></Image>
-        <Canvas x:Name="can" Background="Transparent" IsHitTestVisible="False"></Canvas>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" Command="{Binding OkCommand}">OK</Button>
+        <Button Grid.Column="1" Command="{Binding CancelCommand}">Cancel</Button>
+        <Button Grid.Column="2"></Button>
+        <Image Stretch="None" Source="{Binding TextureImage.Get.Source}" Grid.ColumnSpan="3" Grid.Row="1"></Image>
+        <Canvas x:Name="can" Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1"></Canvas>
     </Grid>
 </Window>

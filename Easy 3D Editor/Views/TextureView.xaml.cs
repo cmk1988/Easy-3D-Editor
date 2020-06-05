@@ -27,6 +27,13 @@ namespace Easy_3D_Editor.ViewModels
             {
                 ((TextureViewModel)DataContext).Can = can;
                 ((TextureViewModel)DataContext).SetEvents();
+                this.KeyDown += (a, b) =>
+                {
+                    if(b.Key == Key.Escape)
+                        ((TextureViewModel)DataContext).ClearSelectedEdge();
+                    if (b.Key == Key.Space)
+                        ((TextureViewModel)DataContext).ResetEdges();
+                };
             };
         }
     }

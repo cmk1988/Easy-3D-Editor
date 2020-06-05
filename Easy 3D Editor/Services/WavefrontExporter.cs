@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Remoting.Activation;
 using System.Text;
 using System.Threading.Tasks;
+using Xml2CSharp;
 
 namespace Easy_3D_Editor.Services
 {
@@ -84,11 +85,15 @@ namespace Easy_3D_Editor.Services
 
         public class Flat
         {
+            static int _id = 0;
+
+            public int Id { get; }
             public int ModelId { get; }
             public List<FlatPoint> Points { get; set; } = new List<FlatPoint>();
 
             public Flat(int id)
             {
+                Id = ++_id;
                 ModelId = id;
             }
 
@@ -234,8 +239,22 @@ namespace Easy_3D_Editor.Services
             }
         }
 
-        public WavefrontExporter(IEnumerable<Element> elements, float multiplicator = 0.01f)
+        float offsetX;
+        float offsetY;
+        float offsetZ;
+
+        public WavefrontExporter(
+            IEnumerable<Element> elements, 
+            float multiplicator = 0.01f, 
+            float offsetX = 0.0f, 
+            float offsetY = 0.0f,
+            float offsetZ = 0.0f)
         {
+            this.elements = elements;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.offsetZ = offsetZ;
+
             LoadData(elements, multiplicator);
         }
 
@@ -257,6 +276,46 @@ namespace Easy_3D_Editor.Services
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
             return !(has_neg && has_pos);
+        }
+
+        public void SetTextureForElement(int id, TextureForFlat texture)
+        {
+            var element = elements.First(x => x.Id == id);
+            var _flats = flats.Where(x => x.ModelId == id).ToList();
+            if (element.GetType() == typeof(Cube))
+            {
+                foreach (var flat in _flats)
+                {
+                    SetTextureforFlat(flat.Id, texture);
+                }
+            }
+            else if(element.GetType() == typeof(Sphere))
+            {
+                var sphere = (Sphere)element;
+                foreach (var posi in element.Positions)
+                {
+                    float alpha = (float)(2 * Math.PI / (sphere.positionPerLevelCount));
+                    //posi.
+                }
+            }
+        }
+
+        public void SetTextureforFlat(Flat flat, TextureForFlat texture)
+        {
+            if (flat.Points.Count == texture.Coordinates.Count)
+            {
+                for (int i = 0; i < flat.Points.Count; i++)
+                {
+                    var textureCoord = texture.Coordinates[i];
+                    flat.Points[i].TextureId = addTexture(textureCoord.X, textureCoord.Y);
+                }
+            }
+        }
+
+        public void SetTextureforFlat(int id, TextureForFlat texture)
+        {
+            var flat = flats.First(x => x.Id == id);
+            SetTextureforFlat(flat, texture);
         }
 
         public List<FlatWithPositions> GetFlatBetweenXY(int x, int y)
@@ -433,9 +492,12 @@ namespace Easy_3D_Editor.Services
             return result;
         }
 
+        IEnumerable<Element> elements;
+
         public void LoadData(IEnumerable<Element> elements, float multiplicator = 0.01f)
         {
             this.multiplicator = multiplicator;
+            this.elements = elements;
 
             flats = new List<Flat>();
             textureCoordinates = new List<TextureCoordinate>();

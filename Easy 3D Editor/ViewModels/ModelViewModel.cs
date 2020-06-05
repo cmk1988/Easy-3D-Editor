@@ -58,8 +58,21 @@ namespace Easy_3D_Editor.ViewModels
 
         WavefrontExporter exporter;
 
-        public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz)
+        bool isMapElement = false;
+        int mapSizeX = 0;
+        int mapSizeY = 0;
+
+        CLICK_MODE lastClickMode = CLICK_MODE.SELECT_AREA;
+
+        public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz, int sizeX = 0, int sizeY = 0)
         {
+            if(sizeX != 0 && sizeY != 0)
+            {
+                isMapElement = true;
+                mapSizeX = sizeX;
+                mapSizeY = sizeY;
+            }
+
             Elements.Get = new List<Element>();
 
             exporter = new WavefrontExporter(Elements.Get);
@@ -124,7 +137,19 @@ namespace Easy_3D_Editor.ViewModels
             this.xz.SelectAction = select;
             this.yz.SelectAction = select;
 
+            this.xy.LoadedAction = loaded;
+            this.xz.LoadedAction = loaded;
+            this.yz.LoadedAction = loaded;
+
             SetPropertyChangeForAll();
+        }
+
+        bool[] isLoaded = new bool[3];
+        void loaded(int xyz)
+        {
+            isLoaded[xyz - 1] = true;
+            if(isLoaded[0] && isLoaded[1] && isLoaded[2])
+                setLines();
         }
 
         private void texture()
@@ -233,6 +258,8 @@ namespace Easy_3D_Editor.ViewModels
 
         private void resize()
         {
+            if (xy.ClickMode != CLICK_MODE.MOVE && xy.ClickMode != CLICK_MODE.RESIZE)
+                lastClickMode = xy.ClickMode;
             xy.ClickMode = CLICK_MODE.RESIZE;
             xz.ClickMode = CLICK_MODE.RESIZE;
             yz.ClickMode = CLICK_MODE.RESIZE;
@@ -240,6 +267,8 @@ namespace Easy_3D_Editor.ViewModels
 
         private void move()
         {
+            if (xy.ClickMode != CLICK_MODE.MOVE && xy.ClickMode != CLICK_MODE.RESIZE)
+                lastClickMode = xy.ClickMode;
             xy.ClickMode = CLICK_MODE.MOVE;
             xz.ClickMode = CLICK_MODE.MOVE;
             yz.ClickMode = CLICK_MODE.MOVE;
@@ -488,6 +517,7 @@ namespace Easy_3D_Editor.ViewModels
 
         void moveSelected(int x, int y, int z, int raster)
         {
+            //round(raster, x, y, z, out int _x, out int _y, out int _z);
             Elements.Get.ForEach(e =>
             {
                 if (e.IsSelected)
@@ -500,9 +530,9 @@ namespace Easy_3D_Editor.ViewModels
                             posi.X -= x;
                             posi.Y -= y;
                             posi.Z -= z;
-                            posi.X = posi.X / raster * raster;
-                            posi.Y = posi.Y / raster * raster;
-                            posi.Z = posi.Z / raster * raster;
+                            posi.X = ((int)posi.X / raster * raster);
+                            posi.Y = (int)posi.Y / raster * raster;
+                            posi.Z = (int)posi.Z / raster * raster;
                         }
                     }
                 }
@@ -510,8 +540,19 @@ namespace Easy_3D_Editor.ViewModels
             setLines();
         }
 
+        void resizeSelected()
+        {
+
+        }
+
         void resize(int caller, int side, int x, int y, int raster)
         {
+            //if(isNewCube)
+            //{
+
+            //    return;
+            //}
+
             int _x = 0;
             int _y = 0;
             int width = 0;
@@ -598,13 +639,33 @@ namespace Easy_3D_Editor.ViewModels
                 cube_depth += raster;
         }
 
+        void round(int raster, int x, int y, int z, out int _x, out int _y, out int _z)
+        {
+            _x = x / raster * raster;
+            _y = y / raster * raster;
+            _z = z / raster * raster;
+            //if (cube_x % raster > raster / 2)
+            //    cube_x += raster;
+            //if (cube_y % raster > raster / 2)
+            //    cube_y += raster;
+            //if (cube_z % raster > raster / 2)
+            //    cube_z += raster;
+            //if (cube_width % raster > raster / 2)
+            //    cube_width += raster;
+            //if (cube_height % raster > raster / 2)
+            //    cube_height += raster;
+            //if (cube_depth % raster > raster / 2)
+            //    cube_depth += raster;
+        }
+
         void add()
         {
-            if (xy.ClickMode == CLICK_MODE.NEW_CUBE)
+            if (xy.ClickMode == CLICK_MODE.NEW_CUBE || lastClickMode == CLICK_MODE.NEW_CUBE)
                 addCube();
-            else if (xy.ClickMode == CLICK_MODE.NEW_SPHERE)
+            else if (xy.ClickMode == CLICK_MODE.NEW_SPHERE || lastClickMode == CLICK_MODE.NEW_SPHERE)
                 addSphere();
 
+            lastClickMode = CLICK_MODE.SELECT_AREA;
             resetList();
             removeRectangles();
             setLines();
@@ -637,7 +698,7 @@ namespace Easy_3D_Editor.ViewModels
             var curLvl = 1;
             for (int i = level - 1; i > 1; --i)
             {
-                var a = alpha * curLvl;// + alpha;
+                var a = alpha * curLvl;
                 var y = Math.Cos(a) * (cube_height / 2.0f);
                 l2.Add((float)y);
                 var radius = Math.Sin(a) * (cube_width / 2.0f);
@@ -842,6 +903,68 @@ namespace Easy_3D_Editor.ViewModels
             var lines21 = new List<KeyValuePair<Shape, Brush>>();
             var lines22 = new List<KeyValuePair<Shape, Brush>>();
             var lines23 = new List<KeyValuePair<Shape, Brush>>();
+
+            if(isMapElement)
+            {
+                for (int i = 0; i < mapSizeX; ++i)
+                {
+                    for (int j = 0; j < mapSizeY; ++j)
+                    {
+                        int _x1 = i * 128;
+                        int _y1 = j * 128;
+                        int _x2 = (i + 1) * 128;
+                        int _y2 = (j + 1) * 128;
+                        int _zOffset = 128 * 2;
+
+                        var p1 = new Position3D
+                        {
+                            X = _x1,
+                            Y = _zOffset,
+                            Z = _y1
+                        };
+                        var p2 = new Position3D
+                        {
+                            X = _x2,
+                            Y = _zOffset,
+                            Z = _y1
+                        };
+                        var p3 = new Position3D
+                        {
+                            X = _x2,
+                            Y = _zOffset,
+                            Z = _y2
+                        };
+                        var p4 = new Position3D
+                        {
+                            X = _x1,
+                            Y = _zOffset,
+                            Z = _y2
+                        };
+
+                        lines1.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p2, 1), Brushes.Black));
+                        lines1.Add(new KeyValuePair<Shape, Brush>(createLine(p2, p3, 1), Brushes.Black));
+                        lines1.Add(new KeyValuePair<Shape, Brush>(createLine(p3, p4, 1), Brushes.Black));
+                        lines1.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p4, 1), Brushes.Black));
+
+                        lines2.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p2, 2), Brushes.Black));
+                        lines2.Add(new KeyValuePair<Shape, Brush>(createLine(p2, p3, 2), Brushes.Black));
+                        lines2.Add(new KeyValuePair<Shape, Brush>(createLine(p3, p4, 2), Brushes.Black));
+                        lines2.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p4, 2), Brushes.Black));
+
+                        lines3.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p2, 3), Brushes.Black));
+                        lines3.Add(new KeyValuePair<Shape, Brush>(createLine(p2, p3, 3), Brushes.Black));
+                        lines3.Add(new KeyValuePair<Shape, Brush>(createLine(p3, p4, 3), Brushes.Black));
+                        lines3.Add(new KeyValuePair<Shape, Brush>(createLine(p1, p4, 3), Brushes.Black));
+
+                        foreach (var line in lines1)
+                            line.Key.StrokeThickness = 4;
+                        foreach (var line in lines2)
+                            line.Key.StrokeThickness = 4;
+                        foreach (var line in lines3)
+                            line.Key.StrokeThickness = 4;
+                    }
+                }
+            }
 
             foreach (var cube in Elements.Get)
             {

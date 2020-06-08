@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Easy_3D_Editor.Views"
         mc:Ignorable="d"
+        WindowStyle="ToolWindow"
         Title="ListView" Height="450" Width="200">
     <Grid>
         <ListBox ItemsSource="{Binding List.Get}" SelectedItem="{Binding SelectedItem.Get}">
@@ -17,11 +18,13 @@
                 <DataTemplate>
                     <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
+                            <ColumnDefinition Width="60"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Text}"></TextBlock>
-                        <Button Grid.Column="1" Command="{Binding RemoveCommand}">Remove</Button>
+                        <Button Grid.Column="1" Command="{Binding PropertiesCommand}">Properties</Button>
+                        <Button Grid.Column="2" Command="{Binding RemoveCommand}">Remove</Button>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

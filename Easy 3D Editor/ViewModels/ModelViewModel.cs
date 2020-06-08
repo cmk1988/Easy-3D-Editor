@@ -62,6 +62,8 @@ namespace Easy_3D_Editor.ViewModels
         int mapSizeX = 0;
         int mapSizeY = 0;
 
+        public Skeletton Skeletton { get; set; } = new Skeletton();
+
         CLICK_MODE lastClickMode = CLICK_MODE.SELECT_AREA;
 
         public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz, int sizeX = 0, int sizeY = 0)
@@ -141,6 +143,10 @@ namespace Easy_3D_Editor.ViewModels
             this.xz.LoadedAction = loaded;
             this.yz.LoadedAction = loaded;
 
+            this.xy.BoneAction = bone;
+            this.xz.BoneAction = bone;
+            this.yz.BoneAction = bone;
+
             SetPropertyChangeForAll();
         }
 
@@ -164,6 +170,7 @@ namespace Easy_3D_Editor.ViewModels
             xy.ClickMode = CLICK_MODE.NEW_BONE;
             xz.ClickMode = CLICK_MODE.NEW_BONE;
             yz.ClickMode = CLICK_MODE.NEW_BONE;
+            isBone = false;
         }
 
         void clearSelection(bool clearAll = true)
@@ -177,6 +184,36 @@ namespace Easy_3D_Editor.ViewModels
                     point.IsSelected = false;
                 }
             });
+        }
+
+        bool isBone = false;
+        int bone_x = 0;
+        int bone_y = 0;
+        int bone_z = 0;
+        void bone(int xyz, int raster, int x, int y)
+        {
+            if(isBone)
+            {
+                Bone bone = new Bone();
+                bone.Positions[0].X = bone_x;
+                bone.Positions[0].Y = bone_y;
+                bone.Positions[0].Z = bone_z;
+                bone.Positions[1].X = x / raster * raster;
+                bone.Positions[1].Y = y / raster * raster;
+                bone.Positions[1].Z = bone_z;
+
+                Skeletton.Bones.Add(bone);
+                Elements.Get.Add(bone);
+                isBone = false;
+            }
+            else
+            {
+                bone_x = x / raster * raster;
+                bone_y = y / raster * raster;
+                isBone = true;
+            }
+            setLines();
+            resetList();
         }
 
         void select(int xyz, int _x, int _y)
@@ -333,14 +370,14 @@ namespace Easy_3D_Editor.ViewModels
         void list()
         {
             if (listVm == null)
-                listVm = new ListViewModel(Elements.Get.Select(x => x.GetListElement()).ToList(), selectElement, remove);
+                listVm = new ListViewModel(Elements.Get, selectElement, remove);
             ViewManager.ShowView(typeof(Views.ListView), listVm);
         }
 
         void resetList()
         {
             if (listVm != null)
-                listVm.SetList(Elements.Get.Select(x => x.GetListElement()).ToList());
+                listVm.SetList(Elements.Get);
         }
 
         void selectElement(int id)
@@ -354,7 +391,10 @@ namespace Easy_3D_Editor.ViewModels
 
         void remove(int id)
         {
+            var element = Elements.Get.First(x => x.Id == id);
             Elements.Get = Elements.Get.Where(x => x.Id != id).ToList();
+            if (element.GetType() == typeof(Bone))
+                Skeletton.Bones.Remove((Bone)element);
             setLines();
             resetList();
         }
@@ -966,6 +1006,18 @@ namespace Easy_3D_Editor.ViewModels
                 }
             }
 
+            var boneList1 = new List<KeyValuePair<Shape, Brush>>();
+            var boneList2 = new List<KeyValuePair<Shape, Brush>>();
+            var boneList3 = new List<KeyValuePair<Shape, Brush>>();
+            int boneColor = 0;
+            foreach (var bone in Skeletton.Bones)
+            {
+                boneColor++;
+                boneList1.Add(new KeyValuePair<Shape, Brush>(createLine(bone.Positions[0], bone.Positions[1], 1), boneColor % 2 == 0 ? Brushes.Green : Brushes.DarkRed));
+                boneList2.Add(new KeyValuePair<Shape, Brush>(createLine(bone.Positions[0], bone.Positions[1], 2), boneColor % 2 == 0 ? Brushes.Green : Brushes.DarkRed));
+                boneList3.Add(new KeyValuePair<Shape, Brush>(createLine(bone.Positions[0], bone.Positions[1], 3), boneColor % 2 == 0 ? Brushes.Green : Brushes.DarkRed));
+            }
+
             foreach (var cube in Elements.Get)
             {
                 if (cube.IsSelected)
@@ -987,6 +1039,9 @@ namespace Easy_3D_Editor.ViewModels
             xy.Lines.AddRange(lines21);
             xz.Lines.AddRange(lines22);
             yz.Lines.AddRange(lines23);
+            xy.Lines.AddRange(boneList1);
+            xz.Lines.AddRange(boneList2);
+            yz.Lines.AddRange(boneList3);
 
             if (flats != null)
             {

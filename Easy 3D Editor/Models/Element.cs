@@ -10,13 +10,14 @@ namespace Easy_3D_Editor.Models
 {
     public class ListElement
     {
-        public int Id { get; }
-        public string Text { get; }
+        Element element;
 
-        public ListElement(int id, string text)
+        public int Id => element.Id;
+        public string Text => element.Text;
+
+        public ListElement(Element element)
         {
-            Id = id;
-            Text = text;
+            this.element = element;
         }
     }
 
@@ -43,7 +44,7 @@ namespace Easy_3D_Editor.Models
         public static int id = 0;
 
         public int Id { get; set; }
-        public string Text { get; set; }
+        public virtual string Text { get; set; }
         public Position3D[] Positions { get; set; }
         public bool IsSelected { get; set; }
         public int flatCount { get; protected set; }
@@ -55,7 +56,7 @@ namespace Easy_3D_Editor.Models
 
         public ListElement GetListElement()
         {
-            return new ListElement(Id, Text);
+            return new ListElement(this);
         }
     }
 
@@ -136,10 +137,13 @@ namespace Easy_3D_Editor.Models
         public Matrix3D Matrix { get; set; }
         public int ParentBone { get; set; } = 0;
 
+        public override string Text => $"Id: {Id} (Bone) Parent = {ParentBone}";
+
         public Bone() : base()
         {
-            Text = $"Id: {Id} (Bone) Parent = {ParentBone}";
             Positions = new Position3D[2];
+            Positions[0] = new Position3D();
+            Positions[1] = new Position3D();
             flatCount = 0;
             BoneId = ++bid;
 

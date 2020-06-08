@@ -35,8 +35,10 @@ namespace Easy_3D_Editor.ViewModels
 
         Point oldPoint;
 
-        Command OkCommand { get; set; }
-        Command CancelCommand { get; set; }
+        public NotifiingProperty<int> Height { get; } = new NotifiingProperty<int>();
+
+        public Command OkCommand { get; set; }
+        public Command CancelCommand { get; set; }
 
         public void ClearSelectedEdge()
         {
@@ -147,6 +149,11 @@ namespace Easy_3D_Editor.ViewModels
             {
                 ExecuteFunc = x =>
                 {
+                    this.TextureForFlat.Coordinates.ForEach(coord =>
+                    {
+                        coord.X /= 700.0f;
+                        coord.Y /= (float)Height.Get;
+                    });
                     IsOK = true;
                     Close();
                 }
@@ -163,6 +170,7 @@ namespace Easy_3D_Editor.ViewModels
 
             SetPropertyChangeForAll();
             Image = System.Drawing.Image.FromFile(filename);
+            Height.Get = (int)((700.0f / Image.Width) * Image.Height);
             TextureImage.Get = ImageHelper.ConvertImageToWpfImage(Image);
         }
 

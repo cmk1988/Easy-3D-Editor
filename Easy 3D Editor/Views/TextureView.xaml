@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Easy_3D_Editor.ViewModels"
         mc:Ignorable="d"
-        Title="TextureView" Height="auto" Width="auto">
-    <Grid>
+        Title="TextureView"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize">
+    <Grid Width="700">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="{Binding Height.Get}"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -19,7 +21,7 @@
         <Button Grid.Column="0" Command="{Binding OkCommand}">OK</Button>
         <Button Grid.Column="1" Command="{Binding CancelCommand}">Cancel</Button>
         <Button Grid.Column="2"></Button>
-        <Image Stretch="None" Source="{Binding TextureImage.Get.Source}" Grid.ColumnSpan="3" Grid.Row="1"></Image>
-        <Canvas x:Name="can" Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1"></Canvas>
+        <Image Width="700" Stretch="Uniform" Height="{Binding Height.Get}" Source="{Binding TextureImage.Get.Source}" Grid.ColumnSpan="3" Grid.Row="1"></Image>
+        <Canvas Width="700" Height="{Binding Height.Get}" x:Name="can" Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1"></Canvas>
     </Grid>
 </Window>

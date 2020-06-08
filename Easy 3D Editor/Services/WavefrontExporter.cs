@@ -384,12 +384,40 @@ namespace Easy_3D_Editor.Services
             }
             else if (element.GetType() == typeof(Sphere))
             {
-                var sphere = (Sphere)element;
-                var curY = 0.0f;
-                foreach (var posi in element.Positions)
-                {
-                }
+                //var sphere = (Sphere)element;
+                //var curY = 0.0f;
+                //foreach (var posi in element.Positions)
+                //{
+                //    flats.Where(x => x.ModelId == id).ToList().ForEach(x => x.Points.ForEach(y => 
+                //    {
+                //        var tex = textureCoordinates[y.TextureId - 1];
+                //        y.TextureId = addTexture(
+                //            texture.Coordinates[0].X + tex.X * (texture.Coordinates[0].X - texture.Coordinates[1].X),
+
+                //            );
+                //    }));
+                //}
             }
+        }
+
+        void calcTexturePosition(TextureForFlat texture, float _x, float _y, out float x, out float y)
+        {
+            var c1 = texture.Coordinates[0];
+            var c2 = texture.Coordinates[1];
+            var c3 = texture.Coordinates[2];
+            var c4 = texture.Coordinates[3];
+
+            var a1 = (c1.Y - c4.Y) / (c1.X - c4.X);
+            var b1 = c4.Y;
+
+            var a2 = (c2.Y - c1.Y) / (c2.X - c1.X);
+            var b2 = c1.Y;
+
+            var a3 = (c3.Y - c4.Y) / (c3.X - c4.X);
+            var b3 = c4.Y;
+
+            x = c4.X;
+            y = 0.0f;
         }
 
         public void SetTextureforFlat(Flat flat, TextureForFlat texture)

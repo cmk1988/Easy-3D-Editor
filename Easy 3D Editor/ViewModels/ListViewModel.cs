@@ -1,4 +1,5 @@
 ﻿using Easy_3D_Editor.Models;
+using Easy_3D_Editor.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,18 @@ namespace Easy_3D_Editor.ViewModels
         public string Text => listElement.Text;
 
         public Command RemoveCommand { get; } = new Command();
+        public Command PropertiesCommand { get; } = new Command();
 
-        public ListElementWithCommand(ListElement listElement, Action<int> removeAction)
+        public ListElementWithCommand(ListElement listElement, Action<int> removeAction, Action<int> propertyAction)
         {
             this.listElement = listElement;
             RemoveCommand.ExecuteFunc = x =>
             {
                 removeAction(Id);
+            };
+            PropertiesCommand.ExecuteFunc = x =>
+            {
+                propertyAction(Id);
             };
         }
     }
@@ -33,12 +39,14 @@ namespace Easy_3D_Editor.ViewModels
         public NotifiingProperty<List<ListElementWithCommand>> List { get; } = new NotifiingProperty<List<ListElementWithCommand>>();
         public NotifiingProperty<ListElementWithCommand> SelectedItem { get; } = new NotifiingProperty<ListElementWithCommand>();
 
-        public Command RemoveCommand { get; } = new Command();
         Action<int> removeItem;
 
-        public ListViewModel(List<ListElement> list, Action<int> selectedItemChanged, Action<int> removeItem)
+        List<Element> list;
+
+        public ListViewModel(List<Element> list, Action<int> selectedItemChanged, Action<int> removeItem)
         {
             this.removeItem = removeItem;
+            this.list = list;
 
             SetPropertyChangeForAll();
 
@@ -48,18 +56,26 @@ namespace Easy_3D_Editor.ViewModels
                     selectedItemChanged(x.Id);
             };
 
-            RemoveCommand.ExecuteFunc = x =>
-            {
-                if(x != null)
-                    removeItem(((ListElement)x).Id);
-            };
+            
 
             SetList(list);
         }
 
-        public void SetList(List<ListElement> list)
+        public void showProperties(int id)
         {
-            List.Get = list.Select(x => new ListElementWithCommand(x, removeItem)).ToList();
+            var element = list.First(x => x.Id == id);
+            if(element.GetType() == typeof(Bone))
+            {
+                var vm = new BonePropertiesViewModel((Bone)element, removeItem);
+                ViewManager.ShowDialogView(typeof(BoneProperties), vm);
+            }
+            SetList(list);
+        }
+
+        public void SetList(List<Element> list)
+        {
+            this.list = list;
+            List.Get = list.Select(x => new ListElementWithCommand(x.GetListElement(), removeItem, showProperties)).ToList();
         }
     }
 }

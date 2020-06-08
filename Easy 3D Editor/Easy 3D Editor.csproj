@@ -61,9 +61,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Animation.cs" />
     <Compile Include="Models\Dae.cs" />
     <Compile Include="Models\Element.cs" />
     <Compile Include="Models\Flat.cs" />
+    <Compile Include="Models\Skeletton.cs" />
     <Compile Include="Models\Vertex.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -76,12 +78,17 @@
     <Compile Include="Services\PositionManager.cs" />
     <Compile Include="Services\Serializer.cs" />
     <Compile Include="Services\WavefrontExporter.cs" />
+    <Compile Include="ViewModels\AnimationViewModel.cs" />
+    <Compile Include="ViewModels\BonePropertiesViewModel.cs" />
     <Compile Include="ViewModels\DataInputViewModel.cs" />
     <Compile Include="ViewModels\FlatListViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
     <Compile Include="ViewModels\MapEditorViewModel.cs" />
     <Compile Include="ViewModels\ShapeViewModel.cs" />
     <Compile Include="ViewModels\TextureViewModel.cs" />
+    <Compile Include="Views\BoneProperties.xaml.cs">
+      <DependentUpon>BoneProperties.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FlatListView.xaml.cs">
       <DependentUpon>FlatListView.xaml</DependentUpon>
     </Compile>
@@ -154,6 +161,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\BoneProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FlatListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

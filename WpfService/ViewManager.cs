@@ -38,12 +38,12 @@ namespace WpfServices
             view.Show();
         }
 
-        public static bool FileDialog(out string selectedFileName, string initialDirectory = "c:\\")
+        public static bool FileDialog(out string selectedFileName, string filter, string initialDirectory = "c:\\")
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
             openFileDialog1.InitialDirectory = initialDirectory;
-            openFileDialog1.Filter = "Image Files (*.png, *.jpg)|*.png;*.jpg";
+            openFileDialog1.Filter = filter;
             openFileDialog1.FilterIndex = 0;
             openFileDialog1.RestoreDirectory = true;
 
@@ -53,6 +53,22 @@ namespace WpfServices
                 return true;
             }
             selectedFileName = null;
+            return false;
+        }
+
+        public static bool DirectoryDialog(out string selectedPath, string initialDirectory = "c:\\")
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+
+            folderBrowserDialog.SelectedPath = initialDirectory;
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                selectedPath = folderBrowserDialog.SelectedPath;
+                return true;
+            }
+
+            selectedPath = null;
             return false;
         }
 

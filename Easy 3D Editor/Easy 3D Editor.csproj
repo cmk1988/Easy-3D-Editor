@@ -80,6 +80,7 @@
     <Compile Include="Services\WavefrontExporter.cs" />
     <Compile Include="ViewModels\AnimationViewModel.cs" />
     <Compile Include="ViewModels\BonePropertiesViewModel.cs" />
+    <Compile Include="ViewModels\ConfigViewModel.cs" />
     <Compile Include="ViewModels\DataInputViewModel.cs" />
     <Compile Include="ViewModels\FlatListViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
@@ -88,6 +89,9 @@
     <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="Views\BoneProperties.xaml.cs">
       <DependentUpon>BoneProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ConfigView.xaml.cs">
+      <DependentUpon>ConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FlatListView.xaml.cs">
       <DependentUpon>FlatListView.xaml</DependentUpon>
@@ -162,6 +166,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\BoneProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ConfigView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

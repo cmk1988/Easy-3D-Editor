@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:Easy_3D_Editor.Views"
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
-        Title="Easy 3D Editor" Height="160" Width="200">
+        Title="Easy 3D Editor" Height="215" Width="200">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -19,5 +21,7 @@
         <Button Grid.Row="1" Command="{Binding NewModel}">New Model</Button>
         <Button Grid.Row="2" Command="{Binding NewMap}">New Map</Button>
         <Button Grid.Row="3" Command="{Binding NewMapElement}">New Map-Element</Button>
+        <Button Grid.Row="4" Command="{Binding Animation}">New Animation</Button>
+        <Button Grid.Row="5" Command="{Binding SetConfig}">Config</Button>
     </Grid>
 </Window>

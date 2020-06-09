@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Easy_3D_Editor.Services
 {
+    [Serializable]
     class Config
     {
         public string OutputPath { get; set; }
@@ -13,16 +15,37 @@ namespace Easy_3D_Editor.Services
 
     class ConfigLoader
     {
-        public Config Config { get; }
+        const string CONFIG_FILE = "config.dat";
+
+        public Config Config { get; private set; }
 
         public static ConfigLoader Instance => new ConfigLoader();
 
+        private void saveConfig()
+        {
+            Serializer.SerializeBinary(CONFIG_FILE, Config);
+        }
+
         private ConfigLoader()
         {
-            Config = new Config
+            if (File.Exists(CONFIG_FILE))
             {
-                OutputPath = @"D:\Develop\Cpp\3DEngine\Engine\modell\"
-            };
+                Config = Serializer.DeserializeBinary<Config>(CONFIG_FILE);
+            }
+            else
+            {
+                Config = new Config
+                {
+                    OutputPath = @""
+                };
+                saveConfig();
+            }
+        }
+
+        public void SetConfig(Config config)
+        {
+            this.Config = config;
+            saveConfig();
         }
     }
 }

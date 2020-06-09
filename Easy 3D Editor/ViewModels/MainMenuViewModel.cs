@@ -26,6 +26,7 @@ namespace Easy_3D_Editor.ViewModels
         public Command NewMap { get; set; }
         public Command Test2 { get; set; }
         public Command NewMapElement { get; set; }
+        public Command SetConfig { get; set; }
 
         public MainMenuViewModel()
         {
@@ -45,7 +46,17 @@ namespace Easy_3D_Editor.ViewModels
             {
                 ExecuteFunc = x => newMapElement()
             };
+            SetConfig = new Command
+            {
+                ExecuteFunc = x => setConfig()
+            };
             SetPropertyChangeForAll();
+        }
+
+        void setConfig()
+        {
+            var vm = new ConfigViewModel();
+            ViewManager.ShowDialogView(typeof(ConfigView), vm);
         }
 
         void newMapElement()

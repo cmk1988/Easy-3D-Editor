@@ -66,7 +66,7 @@ namespace Easy_3D_Editor.ViewModels
             var element = list.First(x => x.Id == id);
             if(element.GetType() == typeof(Bone))
             {
-                var vm = new BonePropertiesViewModel((Bone)element, removeItem);
+                var vm = new BonePropertiesViewModel((Bone)element, list.Where(x => x.GetType() != typeof(Bone)), removeItem);
                 ViewManager.ShowDialogView(typeof(BoneProperties), vm);
             }
             SetList(list);

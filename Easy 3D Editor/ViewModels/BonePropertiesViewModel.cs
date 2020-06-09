@@ -8,6 +8,38 @@ using WpfServices;
 
 namespace Easy_3D_Editor.ViewModels
 {
+    class BoneListElementBase
+    {
+        Element element;
+        public string Text => element.Text;
+        public int Id => element.Id;
+
+        public BoneListElementBase(Element element)
+        {
+            this.element = element;
+        }
+    }
+
+    class BoneChild : BoneListElementBase
+    {
+        public Command AddCommand { get; } = new Command();
+
+        public BoneChild(Element element, Action<int> action) : base(element)
+        {
+            AddCommand.ExecuteFunc = x => action(Id);
+        }
+    }
+
+    class UsedBoneChild : BoneListElementBase
+    {
+        public Command RemoveCommand { get; } = new Command();
+
+        public UsedBoneChild(Element element, Action<int> action) : base(element)
+        {
+            RemoveCommand.ExecuteFunc = x => action(Id);
+        }
+    }
+
     class BonePropertiesViewModel : ViewModelBase
     {
         public NotifiingProperty<string> Id { get; } = new NotifiingProperty<string>();
@@ -20,8 +52,26 @@ namespace Easy_3D_Editor.ViewModels
         public Command CancelCommand { get; } = new Command();
         public Command RemoveCommand { get; } = new Command();
 
-        public BonePropertiesViewModel(Bone bone, Action<int> removeAction)
+        readonly Bone bone;
+        readonly List<Element> elements;
+
+        public NotifiingProperty<List<UsedBoneChild>> List1 { get; } = new NotifiingProperty<List<UsedBoneChild>>();
+        public NotifiingProperty<List<BoneChild>> List2 { get; } = new NotifiingProperty<List<BoneChild>>();
+
+        public BonePropertiesViewModel(Bone bone, IEnumerable<Element> elements, Action<int> removeAction)
         {
+            List1.Get = new List<UsedBoneChild>();
+            this.bone = bone;
+            this.elements = elements.ToList();
+            List2.Get = this.elements.Select(x => new BoneChild(x, o =>
+            {
+                List1.Get.Add(new UsedBoneChild(x, p =>
+                {
+                    List1.Get = List1.Get.Where(q => q.Id != p).ToList();
+                }));
+                List1.Get = List1.Get.ToList();
+            })).ToList();
+
             Id.Get = $"{bone.Id}";
             BoneId.Get = $"{bone.BoneId}";
             ParentId.Get = $"{bone.ParentBone}";

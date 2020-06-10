@@ -645,12 +645,36 @@ namespace Easy_3D_Editor.Services
         {
             if (element.Positions.Count() != 8)
                 throw new Exception("Corrupted cube! element.Positions.Count() != 8");
-            addFlat(element.Id, element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3]);
-            addFlat(element.Id, element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7]);
-            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1]);
-            addFlat(element.Id, element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2]);
-            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3]);
-            addFlat(element.Id, element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2]);
+            addFlat(element.Id, element.Positions[0], element.Positions[1], element.Positions[2], element.Positions[3],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
+            addFlat(element.Id, element.Positions[4], element.Positions[5], element.Positions[6], element.Positions[7],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
+            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[5], element.Positions[1],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
+            addFlat(element.Id, element.Positions[3], element.Positions[7], element.Positions[6], element.Positions[2],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
+            addFlat(element.Id, element.Positions[0], element.Positions[4], element.Positions[7], element.Positions[3],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
+            addFlat(element.Id, element.Positions[1], element.Positions[5], element.Positions[6], element.Positions[2],
+                new Position2D { X = 0.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 1.0f },
+                new Position2D { X = 1.0f, Y = 0.0f },
+                new Position2D { X = 0.0f, Y = 0.0f });
         }
 
         void addFlatsForSphere(Sphere element)
@@ -870,7 +894,7 @@ namespace Easy_3D_Editor.Services
             foreach (var flat in flats)
                 content += flat.GetLine();
 
-            File.WriteAllText(ConfigLoader.Instance.Config.OutputPath + filename, content);
+            File.WriteAllText(Path.Combine(ConfigLoader.Instance.Config.OutputPath, filename), content);
         }
     }
 }

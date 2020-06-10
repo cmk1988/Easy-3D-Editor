@@ -478,7 +478,7 @@ namespace Easy_3D_Editor.Services
                 if (b)
                 {
                     var f = new FlatWithPositions();
-                    f.FlatId = flats.IndexOf(flat);
+                    f.FlatId = flat.Id;
                     foreach (var posi in flat.Points)
                     {
                         var vert = vertices[posi.VertexId - 1];

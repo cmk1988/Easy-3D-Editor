@@ -371,6 +371,14 @@ namespace Easy_3D_Editor.Services
             return !(has_neg && has_pos);
         }
 
+        public void SetTextureForFlat(int id, TextureForFlat texture)
+        {
+            var flat = flats.First(x => x.Id == id);
+            if (flat.Points.Count != texture.Coordinates.Count)
+                return;
+            setTextureforFlat(flat, texture);
+        }
+
         public void SetTextureForElement(int id, TextureForFlat texture)
         {
             var element = elements.First(x => x.Id == id);
@@ -420,7 +428,7 @@ namespace Easy_3D_Editor.Services
             y = 0.0f;
         }
 
-        public void SetTextureforFlat(Flat flat, TextureForFlat texture)
+        void setTextureforFlat(Flat flat, TextureForFlat texture)
         {
             if (flat.Points.Count == texture.Coordinates.Count)
             {
@@ -435,7 +443,7 @@ namespace Easy_3D_Editor.Services
         public void SetTextureforFlat(int id, TextureForFlat texture)
         {
             var flat = flats.First(x => x.Id == id);
-            SetTextureforFlat(flat, texture);
+            setTextureforFlat(flat, texture);
         }
 
         public List<FlatWithPositions> GetFlatBetweenXY(int x, int y)

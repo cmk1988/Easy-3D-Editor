@@ -434,7 +434,7 @@ namespace Easy_3D_Editor.Services
 
         public void SetTextureforFlat(int id, TextureForFlat texture)
         {
-            var flat = flats.First(x => x.Id == id);
+            var flat = flats[id];
             setTextureforFlat(flat, texture);
         }
 
@@ -478,7 +478,7 @@ namespace Easy_3D_Editor.Services
                 if (b)
                 {
                     var f = new FlatWithPositions();
-                    f.FlatId = flat.Id;
+                    f.FlatId = flats.IndexOf(flat);
                     foreach (var posi in flat.Points)
                     {
                         var vert = vertices[posi.VertexId - 1];

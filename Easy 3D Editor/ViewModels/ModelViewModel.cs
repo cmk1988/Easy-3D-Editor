@@ -258,7 +258,7 @@ namespace Easy_3D_Editor.ViewModels
                         ViewManager.ShowDialogView(typeof(TextureView), vm);
                         if(vm.IsOK)
                         {
-                            exporter.
+                            exporter.SetTextureforFlat(selectedFlat.FlatId, vm.TextureForFlat);
                         }
                     }
                 }

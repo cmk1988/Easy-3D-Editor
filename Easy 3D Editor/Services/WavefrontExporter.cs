@@ -371,14 +371,6 @@ namespace Easy_3D_Editor.Services
             return !(has_neg && has_pos);
         }
 
-        public void SetTextureForFlat(int id, TextureForFlat texture)
-        {
-            var flat = flats.First(x => x.Id == id);
-            if (flat.Points.Count != texture.Coordinates.Count)
-                return;
-            setTextureforFlat(flat, texture);
-        }
-
         public void SetTextureForElement(int id, TextureForFlat texture)
         {
             var element = elements.First(x => x.Id == id);

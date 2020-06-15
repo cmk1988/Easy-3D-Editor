@@ -9,6 +9,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
@@ -17,11 +19,20 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="120"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        
         <Label>Output Path:</Label>
         <Label Grid.Column="1" Content="{Binding OutputPath.Get}"></Label>
         <Button Grid.Column="2" Command="{Binding OutputPathCommand}">Set Path</Button>
-        
-        <Grid Grid.Row="2" Grid.ColumnSpan="3">
+
+        <Label Grid.Row="1" Grid.Column="0">Sphere Level:</Label>
+        <TextBox Grid.Row="1" Grid.Column="1"></TextBox>
+        <Button Grid.Row="1" Grid.Column="2" Command="{Binding SphereLevelCommand}">Set</Button>
+
+        <Label Grid.Row="2" Grid.Column="0">Save path:</Label>
+        <TextBox Grid.Row="2" Grid.Column="1"></TextBox>
+        <Button Grid.Row="2" Grid.Column="2" Command="{Binding SphereLevelCommand}">Set Path</Button>
+
+        <Grid Grid.Row="4" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>

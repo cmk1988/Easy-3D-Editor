@@ -20,8 +20,23 @@
         </Grid.ColumnDefinitions>
         <Button Grid.Column="0" Command="{Binding OkCommand}">OK</Button>
         <Button Grid.Column="1" Command="{Binding CancelCommand}">Cancel</Button>
-        <Button Grid.Column="2"></Button>
-        <Image Width="700" Stretch="Uniform" Height="{Binding Height.Get}" Source="{Binding TextureImage.Get.Source}" Grid.ColumnSpan="3" Grid.Row="1"></Image>
-        <Canvas Width="700" Height="{Binding Height.Get}" x:Name="can" Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1"></Canvas>
-    </Grid>
+        <Button Grid.Column="2" Command="{Binding AddCommand}">Add to List</Button>
+        <Grid Grid.Row="1" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ListBox ItemsSource="{Binding List.Get}" SelectedItem="{Binding SelectedItem.Get}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding FlatId}"></Label>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Image Width="700" Stretch="Uniform" Height="{Binding Height.Get}" Source="{Binding TextureImage.Get.Source}" Grid.Column="1"></Image>
+            <Canvas Width="700" Height="{Binding Height.Get}" x:Name="can" Background="Transparent" Grid.Column="1"></Canvas>
+        </Grid>
+   </Grid>
 </Window>

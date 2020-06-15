@@ -39,6 +39,10 @@ namespace Easy_3D_Editor.ViewModels
 
         public Command OkCommand { get; set; }
         public Command CancelCommand { get; set; }
+        public Command AddCommand { get; set; }
+
+        public NotifiingProperty<TextureForFlat> SelectedItem { get; } = new NotifiingProperty<TextureForFlat>();
+        public NotifiingProperty<List<TextureForFlat>> List { get; } = new NotifiingProperty<List<TextureForFlat>>();
 
         public void ClearSelectedEdge()
         {
@@ -136,8 +140,16 @@ namespace Easy_3D_Editor.ViewModels
             ResetEdges();
         }
 
+        void add()
+        {
+            TexturePositions.Textures.Add(TextureForFlat);
+            List.Get = TexturePositions.Textures.ToList();
+        }
+
         public TextureViewModel(string filename, FlatWithPositions flat)
         {
+            List.Get = TexturePositions.Textures;
+
             this.TextureForFlat = new TextureForFlat
             {
                 FlatId = flat.FlatId
@@ -165,6 +177,20 @@ namespace Easy_3D_Editor.ViewModels
                 {
                     IsOK = false;
                     Close();
+                }
+            };
+
+            AddCommand = new Command
+            {
+                ExecuteFunc = x => add()
+            };
+
+            SelectedItem.AdditionalAction = x =>
+            {
+                if (x != null)
+                {
+                    TextureForFlat = x;
+                    renderLines();
                 }
             };
 

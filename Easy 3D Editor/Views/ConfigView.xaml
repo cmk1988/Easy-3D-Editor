@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Easy_3D_Editor.Views"
         mc:Ignorable="d"
-        Title="ConfigView" Height="450" Width="800">
+        Title="ConfigView" Height="300" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -15,7 +16,7 @@
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"></ColumnDefinition>
+            <ColumnDefinition Width="120"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="120"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -25,14 +26,17 @@
         <Button Grid.Column="2" Command="{Binding OutputPathCommand}">Set Path</Button>
 
         <Label Grid.Row="1" Grid.Column="0">Sphere Level:</Label>
-        <TextBox Grid.Row="1" Grid.Column="1"></TextBox>
-        <Button Grid.Row="1" Grid.Column="2" Command="{Binding SphereLevelCommand}">Set</Button>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SphereLevel.Get}" PreviewTextInput="CheckInputForNumbers"></TextBox>
 
-        <Label Grid.Row="2" Grid.Column="0">Save path:</Label>
-        <TextBox Grid.Row="2" Grid.Column="1"></TextBox>
-        <Button Grid.Row="2" Grid.Column="2" Command="{Binding SphereLevelCommand}">Set Path</Button>
+        <Label Grid.Row="2" Grid.Column="0">Save Path:</Label>
+        <Label Grid.Row="2" Grid.Column="1" Content="{Binding SavePath.Get}"></Label>
+        <Button Grid.Row="2" Grid.Column="2" Command="{Binding SavePathCommand}">Set Path</Button>
 
-        <Grid Grid.Row="4" Grid.ColumnSpan="3">
+        <Label Grid.Row="3">Default Texture Path:</Label>
+        <Label Grid.Row="3" Grid.Column="1" Content="{Binding DefaultTexturePath.Get}"></Label>
+        <Button Grid.Row="3" Grid.Column="2" Command="{Binding DefaultTexturePathCommand}">Set Path</Button>
+
+        <Grid Grid.Row="5" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>

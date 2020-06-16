@@ -39,7 +39,10 @@ namespace Easy_3D_Editor.Services
             {
                 Config = new Config
                 {
-                    OutputPath = @""
+                    OutputPath = @"",
+                    DefaultTexturepath = @"",
+                    SavePath = @"",
+                    SphereLevel = 11
                 };
                 saveConfig();
             }

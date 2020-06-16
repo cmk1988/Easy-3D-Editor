@@ -254,7 +254,7 @@ namespace Easy_3D_Editor.ViewModels
                 if(selectedFlat != null)
                 {
                     setLines(null, selectedFlat);
-                    if(ViewManager.FileDialog(out string filename, "Image Files (*.png, *.jpg)|*.png;*.jpg"))
+                    if(ViewManager.FileDialog(out string filename, "Image Files (*.png, *.jpg)|*.png;*.jpg", ConfigLoader.Instance.Config.DefaultTexturepath))
                     {
                         var vm = new TextureViewModel(filename, selectedFlat);
                         ViewManager.ShowDialogView(typeof(TextureView), vm);
@@ -424,7 +424,7 @@ namespace Easy_3D_Editor.ViewModels
                     Id = Element.id,
                     Elements = Elements.Get
                 };
-                Serializer.SerializeBinary(vm.Output.Get + ".model", data);
+                Serializer.SerializeBinary(System.IO.Path.Combine(ConfigLoader.Instance.Config.SavePath, vm.Output.Get + ".model"), data);
             }
         }
 
@@ -435,12 +435,13 @@ namespace Easy_3D_Editor.ViewModels
             ViewManager.ShowDialogView(typeof(Input), vm);
             if (vm.IsOK)
             {
-                if(!File.Exists(vm.Output.Get + ".model"))
+                var fileName = System.IO.Path.Combine(ConfigLoader.Instance.Config.SavePath, vm.Output.Get + ".model");
+                if (!File.Exists(fileName))
                 {
-                    MessageBox.Show(ViewManager.RootView, $"File \"{vm.Output.Get + ".model"}\" does not exist!");
+                    MessageBox.Show(ViewManager.RootView, $"File \"{fileName}\" does not exist!");
                     return;
                 }
-                var data = Serializer.DeserializeBinary<SerializableElements>(vm.Output.Get + ".model");
+                var data = Serializer.DeserializeBinary<SerializableElements>(fileName);
                 Element.id = data.Id;
                 Elements.Get = data.Elements;
             }

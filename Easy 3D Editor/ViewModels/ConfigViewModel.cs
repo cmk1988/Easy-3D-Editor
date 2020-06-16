@@ -23,6 +23,9 @@ namespace Easy_3D_Editor.ViewModels
             config = ConfigLoader.Instance.Config;
 
             OutputPath.Get = config.OutputPath;
+            SphereLevel.Get = config.SphereLevel.ToString();
+            SavePath.Get = config.SavePath;
+            DefaultTexturePath.Get = config.DefaultTexturepath;
 
             OutputPathCommand.ExecuteFunc = x =>
             {
@@ -50,10 +53,10 @@ namespace Easy_3D_Editor.ViewModels
 
             SaveCommand.ExecuteFunc = x =>
             {
-                config.OutputPath = OutputPath.Get;
-                config.SavePath = SavePath.Get;
-                config.SphereLevel = int.Parse(SphereLevel.Get);
-                config.DefaultTexturepath = DefaultTexturePath.Get;
+                config.OutputPath = OutputPath.Get ?? "";
+                config.SavePath = SavePath.Get ?? "";
+                config.SphereLevel = int.Parse(SphereLevel.Get ?? "11");
+                config.DefaultTexturepath = DefaultTexturePath.Get ?? "";
 
                 ConfigLoader.Instance.SetConfig(config);
             };

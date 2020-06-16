@@ -11,6 +11,8 @@ namespace Easy_3D_Editor.Services
     class Config
     {
         public string OutputPath { get; set; }
+        public int SphereLevel { get; set; }
+        public string SavePath { get; set; }
     }
 
     class ConfigLoader

@@ -3,10 +3,12 @@ using Easy_3D_Editor.Services;
 using Easy_3D_Editor.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
 //using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -433,6 +435,11 @@ namespace Easy_3D_Editor.ViewModels
             ViewManager.ShowDialogView(typeof(Input), vm);
             if (vm.IsOK)
             {
+                if(!File.Exists(vm.Output.Get + ".model"))
+                {
+                    MessageBox.Show(ViewManager.RootView, $"File \"{vm.Output.Get + ".model"}\" does not exist!");
+                    return;
+                }
                 var data = Serializer.DeserializeBinary<SerializableElements>(vm.Output.Get + ".model");
                 Element.id = data.Id;
                 Elements.Get = data.Elements;

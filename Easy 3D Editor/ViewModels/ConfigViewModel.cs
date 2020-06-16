@@ -11,6 +11,8 @@ namespace Easy_3D_Editor.ViewModels
     class ConfigViewModel : ViewModelBase
     {
         public NotifiingProperty<string> OutputPath { get; } = new NotifiingProperty<string>();
+        public NotifiingProperty<string> SphereLevel { get; } = new NotifiingProperty<string>();
+        public NotifiingProperty<string> SavePath { get; } = new NotifiingProperty<string>();
 
         Config config;
 
@@ -35,6 +37,7 @@ namespace Easy_3D_Editor.ViewModels
             SaveCommand.ExecuteFunc = x =>
             {
                 config.OutputPath = OutputPath.Get;
+
                 ConfigLoader.Instance.SetConfig(config);
             };
 

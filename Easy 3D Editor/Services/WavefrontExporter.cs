@@ -12,10 +12,64 @@ namespace Easy_3D_Editor.Services
 {
     class WavefrontExporter
     {
+        public class TextureCoordinates
+        {
+            public string Text => string.Concat(Coordinates.Select(x => $"{x.X}/{x.Y} "));
+
+            public List<TextureCoordinate> Coordinates { get; }
+
+            public TextureCoordinates(IEnumerable<TextureCoordinate> list)
+            {
+                Coordinates = list.Select(x => new TextureCoordinate(x)).ToList();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is null)
+                    return false;
+                if (obj.GetType() != typeof(TextureCoordinates))
+                    return false;
+                if (Coordinates.Count != ((TextureCoordinates)obj).Coordinates.Count)
+                    return false;
+                for (int i = 0; i < Coordinates.Count; i++)
+                {
+                    if (Coordinates[i].X != ((TextureCoordinates)obj).Coordinates[i].X ||
+                        Coordinates[i].Y != ((TextureCoordinates)obj).Coordinates[i].Y)
+                        return false;
+                }
+                return true;
+            }
+
+            public override int GetHashCode()
+            {
+                return -1484672504 + EqualityComparer<List<TextureCoordinate>>.Default.GetHashCode(Coordinates);
+            }
+
+            public static bool operator ==(TextureCoordinates a, TextureCoordinates b)
+            {
+                if (a is null)
+                {
+                    return b is null;
+                }
+
+                return a.Equals(b);
+            }
+
+            public static bool operator !=(TextureCoordinates a, TextureCoordinates b)
+            {
+                return !(a == b);
+            }
+        }
+
         public class TextureForFlat
         {
             public int FlatId { get; set; }
             public List<TextureCoordinate> Coordinates { get; set; } = new List<TextureCoordinate>();
+
+            public TextureCoordinates GetTextureCoordinates()
+            {
+                return new TextureCoordinates(Coordinates);
+            }
         }
 
         class Vertex
@@ -42,6 +96,15 @@ namespace Easy_3D_Editor.Services
             public string GetLine()
             {
                 return $"vt {X} {Y}\r\n".Replace(",", ".");
+            }
+
+            public TextureCoordinate() {}
+
+            public TextureCoordinate(TextureCoordinate tc)
+            {
+                Id = tc.Id;
+                X = tc.X;
+                Y = tc.Y;
             }
         }
 
@@ -271,7 +334,7 @@ namespace Easy_3D_Editor.Services
 
             foreach (var vertex in _vertices)
             {
-                var _normals = _flats.SelectMany(o => 
+                var _normals = _flats.SelectMany(o =>
                     o.Points.Where(
                         b => b.VertexId == vertex)
                     .Select(b => b.NormalId))
@@ -698,7 +761,7 @@ namespace Easy_3D_Editor.Services
                 };
                 texPosi2 = new Position2D
                 {
-                    X = beta * (i-1),
+                    X = beta * (i - 1),
                     Y = alpha
                 };
                 texPosi3 = new Position2D

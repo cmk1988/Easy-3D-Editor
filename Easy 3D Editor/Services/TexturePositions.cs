@@ -9,6 +9,6 @@ namespace Easy_3D_Editor.Services
 {
     static class TexturePositions
     {
-        public static List<TextureForFlat> Textures { get; set; } = new List<TextureForFlat>();
+        public static List<TextureCoordinates> Textures { get; set; } = new List<TextureCoordinates>();
     }
 }

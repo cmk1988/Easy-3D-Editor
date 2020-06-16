@@ -30,7 +30,7 @@
             <ListBox ItemsSource="{Binding List.Get}" SelectedItem="{Binding SelectedItem.Get}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding FlatId}"></Label>
+                        <Label Content="{Binding Text}"></Label>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

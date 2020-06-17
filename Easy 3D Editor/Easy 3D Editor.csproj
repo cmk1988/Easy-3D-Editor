@@ -86,6 +86,7 @@
     <Compile Include="ViewModels\FlatListViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
     <Compile Include="ViewModels\MapEditorViewModel.cs" />
+    <Compile Include="ViewModels\ModelViewWindowViewModel.cs" />
     <Compile Include="ViewModels\ShapeViewModel.cs" />
     <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="Views\BoneProperties.xaml.cs">
@@ -96,6 +97,9 @@
     </Compile>
     <Compile Include="Views\FlatListView.xaml.cs">
       <DependentUpon>FlatListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModelViewWindow.xaml.cs">
+      <DependentUpon>ModelViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextureView.xaml.cs">
       <DependentUpon>TextureView.xaml</DependentUpon>
@@ -160,6 +164,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ModelViewerEngine\ModelViewerEngine.vcxproj">
+      <Project>{eda2b2e6-5071-4e0b-bbb8-cd93dc26ecad}</Project>
+      <Name>ModelViewerEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WpfService\WpfService.csproj">
       <Project>{c763ba0a-4ff2-4168-bcac-045a063c759b}</Project>
       <Name>WpfService</Name>
@@ -175,6 +183,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FlatListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ModelViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

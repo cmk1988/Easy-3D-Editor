@@ -15,10 +15,6 @@
 
 #include "textureclass.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ShaderManagerClass
-////////////////////////////////////////////////////////////////////////////////
 class ShaderManagerClass
 {
 public:
@@ -30,9 +26,6 @@ public:
 	void Shutdown();
 
 	bool RenderTextureShader(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView* = nullptr);
-	bool RenderNoNormalTextureShader(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
-		D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
-	bool RenderBumpmapShader(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView* = nullptr);
 
 private:
 	TextureShaderClass* m_TextureShader;

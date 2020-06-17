@@ -40,7 +40,7 @@ bool TextureShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-bool TextureShaderClass::Initialize(ID3D11Device*, HWND, WCHAR*, WCHAR*)
+bool TextureShaderClass::Initialize(ID3D11Device*, HWND, const wchar_t*, const wchar_t*)
 {
 	return false;
 }
@@ -56,13 +56,13 @@ void TextureShaderClass::Shutdown()
 
 
 bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-								D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2)
+								D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, texture2);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture);
 	if(!result)
 	{
 		return false;
@@ -317,7 +317,7 @@ void TextureShaderClass::ShutdownShader()
 }
 
 
-void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const wchar_t* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -355,7 +355,7 @@ void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 bool isSet = false;
 
 bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-											 D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2)
+											 D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -394,7 +394,7 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// Now set the constant buffer in the vertex shader with the updated values.
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	ID3D11ShaderResourceView* textures[2] = { texture , texture2 };
+	ID3D11ShaderResourceView* textures[2] = { texture };
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 2, textures);

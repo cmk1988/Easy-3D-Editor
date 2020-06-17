@@ -1,23 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: textureshaderclass.h
-////////////////////////////////////////////////////////////////////////////////
 #ifndef _NONORMALTEXTURESHADERCLASS_H_
 #define _NONORMALTEXTURESHADERCLASS_H_
 
-
-//////////////
-// INCLUDES //
-//////////////
 #include <d3d11.h>
 #include <d3dx10math.h>
 #include <d3dx11async.h>
 #include <fstream>
 using namespace std;
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: TextureShaderClass
-////////////////////////////////////////////////////////////////////////////////
 class NoNormalTextureShaderClass
 {
 private:
@@ -38,9 +27,9 @@ public:
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
+	bool InitializeShader(ID3D11Device*, HWND, const wchar_t*, const wchar_t*);
 	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
+	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const wchar_t*);
 
 	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*);
 	void RenderShader(ID3D11DeviceContext*, int);

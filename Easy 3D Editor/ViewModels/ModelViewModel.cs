@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfServices;
@@ -67,6 +68,8 @@ namespace Easy_3D_Editor.ViewModels
         public Skeletton Skeletton { get; set; } = new Skeletton();
 
         CLICK_MODE lastClickMode = CLICK_MODE.SELECT_AREA;
+
+        ModelViewer engine;
 
         public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz, int sizeX = 0, int sizeY = 0)
         {
@@ -148,6 +151,8 @@ namespace Easy_3D_Editor.ViewModels
             this.xy.BoneAction = bone;
             this.xz.BoneAction = bone;
             this.yz.BoneAction = bone;
+
+            engine = new ModelViewer();
 
             SetPropertyChangeForAll();
         }
@@ -453,6 +458,7 @@ namespace Easy_3D_Editor.ViewModels
             xy.Close();
             xz.Close();
             yz.Close();
+            engine.Dispose();
         }
 
         public void close()
@@ -460,6 +466,7 @@ namespace Easy_3D_Editor.ViewModels
             xy.Close();
             xz.Close();
             yz.Close();
+            engine.Dispose();
             Close();
         }
 

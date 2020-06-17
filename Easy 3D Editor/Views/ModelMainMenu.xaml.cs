@@ -24,12 +24,12 @@ namespace Easy_3D_Editor.Views
         public ModelMainMenu()
         {            
             InitializeComponent();
-            ViewManager.RootView.Visibility = Visibility.Hidden;
+            ViewManager.RootView.WindowState = WindowState.Minimized;
             //this.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(this.Window_MouseDown), true);
             Closing += (x, y) =>
             {
                 ((ModelViewModel)DataContext).close2();
-                ViewManager.RootView.Visibility = Visibility.Visible;
+                ViewManager.RootView.WindowState = WindowState.Normal;
             };
         }
 

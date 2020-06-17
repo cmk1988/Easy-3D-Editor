@@ -21,17 +21,20 @@ bool SystemClass::Initialize()
 	int screenWidth, screenHeight;
 	bool result;
 
+
+	// Initialize the width and height of the screen to zero before sending the variables into the function.
 	screenWidth = 0;
 	screenHeight = 0;
 
+	// Initialize the windows api.
 	InitializeWindows(screenWidth, screenHeight);
 
+	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
 	if (!m_Graphics)
 	{
 		return false;
 	}
-
 	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result)
 	{
@@ -56,8 +59,7 @@ void SystemClass::Shutdown()
 	return;
 }
 
-
-void SystemClass::Run()
+void SystemClass::run()
 {
 	MSG msg;
 	bool done, result;
@@ -66,7 +68,7 @@ void SystemClass::Run()
 	ZeroMemory(&msg, sizeof(MSG));
 
 	done = false;
-	while (!done)
+	while (!done && !cancel)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -88,8 +90,25 @@ void SystemClass::Run()
 		}
 
 	}
+	isRunning = false;
 
 	return;
+}
+
+void SystemClass::Run()
+{
+	runner = thread(&SystemClass::run, this);
+	isRunning = true;
+	runner.detach();
+	return;
+}
+
+void SystemClass::Stop()
+{
+	cancel = true;
+	while (isRunning)
+		Sleep(10);
+	ShutdownWindows();
 }
 
 
@@ -97,11 +116,24 @@ bool SystemClass::Frame()
 {
 	bool result;
 
+	milliseconds ms = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch()
+		);
+
+	if (ms < lastRenderTime + milliseconds{ 20 })
+	{
+		Sleep(10);
+		return true;
+	}
+
 	result = m_Graphics->Frame(m_hwnd);
 	if (!result)
 	{
 		return false;
 	}
+	lastRenderTime = duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch()
+		);
 
 	return true;
 }
@@ -196,7 +228,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 
 	// Create the window with the screen settings and get the handle to it.
 	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
-		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP | WS_BORDER | WS_CAPTION,
 		posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
 
 	// Bring the window up on the screen and set it as main focus.
@@ -205,10 +237,11 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetFocus(m_hwnd);
 
 	// Hide the mouse cursor.
-	ShowCursor(false);
+	ShowCursor(true);
 
 	return;
 }
+
 
 
 void SystemClass::ShutdownWindows()

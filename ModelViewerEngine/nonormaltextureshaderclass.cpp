@@ -256,7 +256,7 @@ void NoNormalTextureShaderClass::ShutdownShader()
 }
 
 
-void NoNormalTextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void NoNormalTextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const wchar_t* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;

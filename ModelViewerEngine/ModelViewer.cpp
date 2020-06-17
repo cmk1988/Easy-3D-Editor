@@ -2,16 +2,28 @@
 
 
 
-ModelViewer::ModelViewer(HWND hwnd)
+ModelViewer::ModelViewer()
 {
+	m_System = new SystemClass();
+	m_System->Initialize();
+	m_System->Run();
 }
 
 ModelViewer::~ModelViewer()
 {
+	m_System->Stop();
+	m_System->Shutdown();
+	delete m_System;
 }
 
 void ModelViewer::Load(System::String^ modelFilePath, System::String^ textureFilePath)
 {
+	Models::GetInstance(nullptr)->SetModel(
+		//L"D:\\Develop\\Easy-3D-Editor\\Easy 3D Editor\\bin\Debug\\t1.obj", 
+		//L"C:\\Users\\User\\Pictures\\sixcuts.png"
+		getWCharFromString(modelFilePath),
+		getWCharFromString(textureFilePath)
+		);
 }
 
 void ModelViewer::Rotate(float x, float y, float z)

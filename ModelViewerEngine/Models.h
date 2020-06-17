@@ -39,15 +39,15 @@ public:
 	Models(ID3D11Device* device);
 	~Models();
 
-	ModelClass* GetOrSetModel(std::wstring, std::wstring, std::wstring);
+	void SetModel(std::wstring, std::wstring);
+	ModelClass* getModel();
 
 	static Models* GetInstance(ID3D11Device* device);
+	static Models* GetInstance();
 
 private:
 	ID3D11Device* m_device;
-	std::unordered_map<std::wstring, ModelClass*> m_models;
-	vector<ModelInfos> m_modelInfos;
-	vector<ModelCombination> m_modelCombinations;
+	ModelClass* m_model = nullptr;
 	static Models* instance;
 
 };

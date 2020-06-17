@@ -156,13 +156,17 @@ int ModelClass::GetIndexCount()
 
 ID3D11ShaderResourceView* ModelClass::GetTexture()
 {
-	return m_Texture->GetTexture();
+	if (m_Texture)
+		return m_Texture->GetTexture();
+	return nullptr;
 }
 
 
 ID3D11ShaderResourceView* ModelClass::GetTexture2()
 {
-	return m_Texture2->GetTexture();
+	if(m_Texture2)
+		return m_Texture2->GetTexture();
+	return nullptr;
 }
 
 
@@ -592,21 +596,6 @@ void ModelClass::CalculateModelVectors()
 
 	return;
 }
-
-//std::vector<std::string> split(std::string s, std::string delimiter = " ")
-//{
-//	std::vector<std::string> v;
-//
-//	size_t pos = 0;
-//	std::string token;
-//	while ((pos = s.find(delimiter)) != std::string::npos) {
-//		token = s.substr(0, pos);
-//		v.push_back(token);
-//		s.erase(0, pos + delimiter.length());
-//	}
-//	v.push_back(s);
-//	return v;
-//}
 
 bool ModelClass::LoadModelObj(std::wstring filename, float multiplicator)
 {

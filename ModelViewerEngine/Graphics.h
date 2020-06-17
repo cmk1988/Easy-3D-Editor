@@ -10,7 +10,7 @@
 
 #include "Models.h"
 
-const bool FULL_SCREEN = true;
+const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -32,13 +32,7 @@ public:
 
 private:
 	bool Render(HWND);
-	bool RenderSceneToTexture(HWND hwnd);
-	bool InitBlurExtension(int screenWidth, int screenHeight, HWND hwnd);
-	bool DownSampleTexture();
-	bool RenderHorizontalBlurToTexture();
-	bool RenderVerticalBlurToTexture();
-	bool UpSampleTexture();
-	bool Render2DTextureScene();
+	bool RenderScene(HWND hwnd);
 
 private:
 	D3DClass* m_D3D;

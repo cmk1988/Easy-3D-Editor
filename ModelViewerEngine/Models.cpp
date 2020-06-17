@@ -12,20 +12,27 @@ Models::~Models()
 {
 }
 
-ModelClass* Models::GetOrSetModel(std::wstring filename, std::wstring texture, std::wstring bumpmap)
+void Models::SetModel(std::wstring filename, std::wstring texture)
 {
-	ModelClass* model = m_models[filename];
-	if (model)
-		return model;
-	model = new ModelClass();
-	model->Initialize(m_device, filename, texture, bumpmap);
-	m_models[filename] = model;
-	return model;
+	if (m_model)
+		delete m_model;
+	m_model = new ModelClass();
+	m_model->Initialize(m_device, filename, texture, L"");
+}
+
+ModelClass* Models::getModel()
+{
+	return m_model;
 }
 
 Models* Models::GetInstance(ID3D11Device* device)
 {
 	if (!instance)
 		instance = new Models(device);
+	return instance;
+}
+
+Models* Models::GetInstance()
+{
 	return instance;
 }

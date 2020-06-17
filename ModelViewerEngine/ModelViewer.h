@@ -1,20 +1,19 @@
 #pragma once
 #include <windows.h>
+#include <vcclr.h>
+#include "System.h"
 
-public class MyClass
+public class ModelViewer
 {
 public:
-	MyClass(HWND hwnd);
-	~MyClass();
+	ModelViewer(HWND hwnd);
+	~ModelViewer();
+
+	void Load(System::String^ modelFilePath, System::String^ textureFilePath);
+	void Rotate(float x, float y, float z);
 
 private:
+	static const wchar_t* getWCharFromString(System::String^ str);
 
+	SystemClass m_System;
 };
-
-MyClass::MyClass(HWND hwnd)
-{
-}
-
-MyClass::~MyClass()
-{
-}

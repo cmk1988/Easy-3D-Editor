@@ -33,11 +33,12 @@
     <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -92,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -165,11 +168,13 @@
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="Models.cpp" />
+    <ClCompile Include="ModelViewer.cpp" />
     <ClCompile Include="nonormaltextureshaderclass.cpp" />
     <ClCompile Include="Paths.cpp" />
     <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="shadermanagerclass.cpp" />
     <ClCompile Include="StringHelpers.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />

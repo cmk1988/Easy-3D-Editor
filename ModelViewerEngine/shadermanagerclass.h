@@ -11,9 +11,6 @@
 ///////////////////////
 #include "d3dclass.h"
 #include "textureshaderclass.h"
-#include "horizontalblurshaderclass.h"
-#include "verticalblurshaderclass.h"
-#include "bumpmapshaderclass.h"
 #include "nonormaltextureshaderclass.h"
 
 #include "textureclass.h"
@@ -37,14 +34,8 @@ public:
 		D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
 	bool RenderBumpmapShader(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView* = nullptr);
 
-	HorizontalBlurShaderClass* GetHorizontalBlurShader();
-	VerticalBlurShaderClass* GetVerticalBlurShader();
-
 private:
 	TextureShaderClass* m_TextureShader;
-	HorizontalBlurShaderClass* m_HorizontalBlurShader;
-	VerticalBlurShaderClass* m_VerticalBlurShader;
-	BumpMapShaderClass* m_BumpMapShader;
 	NoNormalTextureShaderClass* m_noNormalTextureShader;
 
 	ID3D11ShaderResourceView* m_emptyBumpMap;

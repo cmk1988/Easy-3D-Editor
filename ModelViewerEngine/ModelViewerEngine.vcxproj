@@ -138,6 +138,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cameraclass.h" />
+    <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="modelclass.h" />
+    <ClInclude Include="Models.h" />
+    <ClInclude Include="ModelViewer.h" />
+    <ClInclude Include="nonormaltextureshaderclass.h" />
+    <ClInclude Include="Paths.h" />
+    <ClInclude Include="rendertextureclass.h" />
+    <ClInclude Include="shadermanagerclass.h" />
+    <ClInclude Include="StringHelpers.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="textureclass.h" />
+    <ClInclude Include="Textures.h" />
+    <ClInclude Include="textureshaderclass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cameraclass.cpp" />
+    <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="graphicsclass.cpp" />
+    <ClCompile Include="modelclass.cpp" />
+    <ClCompile Include="Models.cpp" />
+    <ClCompile Include="nonormaltextureshaderclass.cpp" />
+    <ClCompile Include="Paths.cpp" />
+    <ClCompile Include="rendertextureclass.cpp" />
+    <ClCompile Include="shadermanagerclass.cpp" />
+    <ClCompile Include="StringHelpers.cpp" />
+    <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="textureshaderclass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

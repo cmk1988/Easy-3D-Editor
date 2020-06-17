@@ -957,7 +957,7 @@ namespace Easy_3D_Editor.Services
             foreach (var flat in flats)
                 content += flat.GetLine();
 
-            File.WriteAllText(Path.Combine(ConfigLoader.Instance.Config.OutputPath, filename), content);
+            File.WriteAllText(filename, content);
         }
     }
 }

@@ -10,5 +10,6 @@
 * Better handling of adding bones
 * adding animation creator
 * Support of COLLADA dae format
+* DirectX 11 => DirectX 12 engine
 
 Special thanks to rastertek http://www.rastertek.com/

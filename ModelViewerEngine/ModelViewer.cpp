@@ -9,6 +9,13 @@ ModelViewer::ModelViewer()
 	m_System->Run();
 }
 
+ModelViewer::ModelViewer(int hwnd)
+{
+	m_System = new SystemClass();
+	m_System->Initialize((HWND)hwnd);
+	m_System->Run();
+}
+
 ModelViewer::~ModelViewer()
 {
 	m_System->Stop();

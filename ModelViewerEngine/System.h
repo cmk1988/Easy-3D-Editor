@@ -17,6 +17,7 @@ public:
 	~SystemClass();
 
 	bool Initialize();
+	bool Initialize(HWND);
 	void Shutdown();
 	void Run();
 	void Stop();

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfServices;
@@ -67,6 +68,8 @@ namespace Easy_3D_Editor.ViewModels
         public Skeletton Skeletton { get; set; } = new Skeletton();
 
         CLICK_MODE lastClickMode = CLICK_MODE.SELECT_AREA;
+
+        ModelViewer engine;
 
         public ModelViewModel(ViewModelXY xy, ViewModelXY xz, ViewModelXY yz, int sizeX = 0, int sizeY = 0)
         {
@@ -149,6 +152,8 @@ namespace Easy_3D_Editor.ViewModels
             this.xz.BoneAction = bone;
             this.yz.BoneAction = bone;
 
+            engine = new ModelViewer();
+
             SetPropertyChangeForAll();
         }
 
@@ -218,6 +223,8 @@ namespace Easy_3D_Editor.ViewModels
             resetList();
         }
 
+        string textureFile = null;
+
         void select(int xyz, int _x, int _y)
         {
             if(xy.ClickMode == CLICK_MODE.TEXTURE)
@@ -254,14 +261,20 @@ namespace Easy_3D_Editor.ViewModels
                 if(selectedFlat != null)
                 {
                     setLines(null, selectedFlat);
-                    if(ViewManager.FileDialog(out string filename, "Image Files (*.png, *.jpg)|*.png;*.jpg", ConfigLoader.Instance.Config.DefaultTexturepath))
+                    if (textureFile == null)
                     {
-                        var vm = new TextureViewModel(filename, selectedFlat);
-                        ViewManager.ShowDialogView(typeof(TextureView), vm);
-                        if(vm.IsOK)
+                        if (ViewManager.FileDialog(
+                            out string filename,
+                            "Image Files (*.png, *.jpg)|*.png;*.jpg",
+                            ConfigLoader.Instance.Config.DefaultTexturepath))
                         {
-                            exporter.SetTextureforFlat(vm.TextureForFlat.FlatId, vm.TextureForFlat);
+                            textureFile = filename;
+                            setTexture(selectedFlat);
                         }
+                    }
+                    else
+                    {
+                        setTexture(selectedFlat);
                     }
                 }
                 setLines();
@@ -293,6 +306,26 @@ namespace Easy_3D_Editor.ViewModels
                     {
                         point.IsSelected = true;
                     });
+        }
+
+        void setTexture(FlatWithPositions flat)
+        {
+            var vm = new TextureViewModel(textureFile, flat);
+            ViewManager.ShowDialogView(typeof(TextureView), vm);
+            if (vm.IsOK)
+            {
+                exporter.SetTextureforFlat(vm.TextureForFlat.FlatId, vm.TextureForFlat);
+                //update3DView();
+            }
+        }
+
+        void update3DView()
+        {
+            if (textureFile != null)
+            {
+                exporter.Export("tmp.obj");
+                engine.Load(System.IO.Path.GetFullPath("tmp.obj"), textureFile);
+            }
         }
 
         private void resize()
@@ -408,7 +441,7 @@ namespace Easy_3D_Editor.ViewModels
             ViewManager.ShowDialogView(typeof(Input), vm);
             if (vm.IsOK)
             {
-                exporter.Export(vm.Output.Get + ".obj");
+                exporter.Export(System.IO.Path.Combine(ConfigLoader.Instance.Config.OutputPath, vm.Output.Get + ".obj"));
             }
         }
 
@@ -453,6 +486,7 @@ namespace Easy_3D_Editor.ViewModels
             xy.Close();
             xz.Close();
             yz.Close();
+            engine.Dispose();
         }
 
         public void close()
@@ -460,6 +494,7 @@ namespace Easy_3D_Editor.ViewModels
             xy.Close();
             xz.Close();
             yz.Close();
+            engine.Dispose();
             Close();
         }
 
@@ -1110,6 +1145,7 @@ namespace Easy_3D_Editor.ViewModels
             xz.LoadCan();
             yz.LoadCan();
             exporter.LoadData(Elements.Get);
+            update3DView();
         }
 
         void drawCube(float sx, float sy, float sz, float x, float y, float z)

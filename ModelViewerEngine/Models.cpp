@@ -14,9 +14,10 @@ Models::~Models()
 
 void Models::SetModel(std::wstring filename, std::wstring texture)
 {
-	if (m_model)
-		delete m_model;
-	m_model = new ModelClass();
+	//if (m_model)
+	//	delete m_model;
+	if (!m_model)
+		m_model = new ModelClass();
 	m_model->Initialize(m_device, filename, texture, L"");
 }
 

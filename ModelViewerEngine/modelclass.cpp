@@ -68,7 +68,7 @@ bool ModelClass::Initialize(ID3D11Device* device, std::wstring modelFilename, st
 	}
 	else if (endsWith(modelFilename, L".obj"))
 	{
-		result = LoadModelObj(modelFilename, 0.02f);
+		result = LoadModelObj(modelFilename, 1.0f);
 		if (!result)
 		{
 			return false;

@@ -27,8 +27,8 @@ D3DClass::~D3DClass()
 }
 
 
-bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, 
-						  float screenDepth, float screenNear)
+bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
+	float screenDepth, float screenNear)
 {
 	HRESULT result;
 	IDXGIFactory* factory;
@@ -45,8 +45,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
+	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
-	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
 
 
 	// Store the vsync setting.
@@ -323,15 +323,15 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	m_deviceContext->RSSetState(m_rasterState);
 
 	// Setup the viewport for rendering.
-	m_viewport.Width = (float)screenWidth;
-	m_viewport.Height = (float)screenHeight;
-	m_viewport.MinDepth = 0.0f;
-	m_viewport.MaxDepth = 1.0f;
-	m_viewport.TopLeftX = 0.0f;
-	m_viewport.TopLeftY = 0.0f;
+	viewport.Width = (float)screenWidth;
+	viewport.Height = (float)screenHeight;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	viewport.TopLeftX = 0.0f;
+	viewport.TopLeftY = 0.0f;
 
 	// Create the viewport.
-	m_deviceContext->RSSetViewports(1, &m_viewport);
+	m_deviceContext->RSSetViewports(1, &viewport);
 
 	// Setup the projection matrix.
 	fieldOfView = (float)D3DX_PI / 4.0f;
@@ -346,33 +346,6 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Create an orthographic projection matrix for 2D rendering.
 	D3DXMatrixOrthoLH(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
-	// Clear the second depth stencil state before setting the parameters.
-	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
-
-	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
-	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
-	depthDisabledStencilDesc.DepthEnable = false;
-	depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthDisabledStencilDesc.StencilEnable = true;
-	depthDisabledStencilDesc.StencilReadMask = 0xFF;
-	depthDisabledStencilDesc.StencilWriteMask = 0xFF;
-	depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	// Create the state using the device.
-	result = m_device->CreateDepthStencilState(&depthDisabledStencilDesc, &m_depthDisabledStencilState);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
 	return true;
 }
 
@@ -380,54 +353,54 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 void D3DClass::Shutdown()
 {
 	// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
-	if(m_swapChain)
+	if (m_swapChain)
 	{
 		m_swapChain->SetFullscreenState(false, NULL);
 	}
 
-	if(m_rasterState)
+	if (m_rasterState)
 	{
 		m_rasterState->Release();
 		m_rasterState = 0;
 	}
 
-	if(m_depthStencilView)
+	if (m_depthStencilView)
 	{
 		m_depthStencilView->Release();
 		m_depthStencilView = 0;
 	}
 
-	if(m_depthStencilState)
+	if (m_depthStencilState)
 	{
 		m_depthStencilState->Release();
 		m_depthStencilState = 0;
 	}
 
-	if(m_depthStencilBuffer)
+	if (m_depthStencilBuffer)
 	{
 		m_depthStencilBuffer->Release();
 		m_depthStencilBuffer = 0;
 	}
 
-	if(m_renderTargetView)
+	if (m_renderTargetView)
 	{
 		m_renderTargetView->Release();
 		m_renderTargetView = 0;
 	}
 
-	if(m_deviceContext)
+	if (m_deviceContext)
 	{
 		m_deviceContext->Release();
 		m_deviceContext = 0;
 	}
 
-	if(m_device)
+	if (m_device)
 	{
 		m_device->Release();
 		m_device = 0;
 	}
 
-	if(m_swapChain)
+	if (m_swapChain)
 	{
 		m_swapChain->Release();
 		m_swapChain = 0;
@@ -450,7 +423,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 
 	// Clear the back buffer.
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, color);
-    
+
 	// Clear the depth buffer.
 	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -461,7 +434,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 void D3DClass::EndScene()
 {
 	// Present the back buffer to the screen since rendering is complete.
-	if(m_vsync_enabled)
+	if (m_vsync_enabled)
 	{
 		// Lock to screen refresh rate.
 		m_swapChain->Present(1, 0);
@@ -513,37 +486,5 @@ void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 {
 	strcpy_s(cardName, 128, m_videoCardDescription);
 	memory = m_videoCardMemory;
-	return;
-}
-
-
-void D3DClass::SetBackBufferRenderTarget()
-{
-	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
-
-	return;
-}
-
-
-void D3DClass::ResetViewport()
-{
-	// Set the viewport.
-	m_deviceContext->RSSetViewports(1, &m_viewport);
-
-	return;
-}
-
-
-void D3DClass::TurnZBufferOn()
-{
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
-	return;
-}
-
-
-void D3DClass::TurnZBufferOff()
-{
-	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
 	return;
 }

@@ -126,7 +126,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_Camera->SetPosition(0.0f, 0.1f, 0.0f);
+	m_Camera->SetPosition(1.0f, -1.0f, -1.0f);
 	m_Camera->SetRotation(0.0f, 0.0f, 0.0f);
 
 	m_models = Models::GetInstance(m_D3D->GetDevice());
@@ -243,7 +243,6 @@ bool GraphicsClass::RenderScene(HWND hwnd)
 	bool result;
 
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetWorldMatrix(worldMatrix);
@@ -259,7 +258,6 @@ bool GraphicsClass::RenderScene(HWND hwnd)
 		return true;
 
 	model->Render(m_D3D->GetDeviceContext());
-
 
 	result = m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(),
 		model->GetIndexCount(),

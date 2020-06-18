@@ -70,6 +70,18 @@ void SystemClass::run()
 	done = false;
 	while (!done && !cancel)
 	{
+		if (pause)
+		{
+			isPaused = true;
+			while (pause)
+			{
+				if (cancel)
+					return;
+				Sleep(20);
+			}
+			isPaused = false;
+		}
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -107,8 +119,20 @@ void SystemClass::Stop()
 {
 	cancel = true;
 	while (isRunning)
-		Sleep(10);
+		Sleep(20);
 	ShutdownWindows();
+}
+
+void SystemClass::PauseRendering()
+{
+	pause = true;
+	while (!isPaused)
+		Sleep(20);
+}
+
+void SystemClass::ContinueRendering()
+{
+	pause = false;
 }
 
 

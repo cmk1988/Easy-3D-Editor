@@ -20,6 +20,8 @@ public:
 	void Shutdown();
 	void Run();
 	void Stop();
+	void PauseRendering();
+	void ContinueRendering();
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
@@ -39,6 +41,8 @@ private:
 	thread runner;
 	bool isRunning = false;
 	bool cancel = false;
+	bool pause = false;
+	bool isPaused = false;
 };
 
 

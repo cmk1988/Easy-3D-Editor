@@ -10,3 +10,5 @@
 * Better handling of adding bones
 * adding animation creator
 * Support of COLLADA dae format
+
+Special thanks to rastertek http://www.rastertek.com/

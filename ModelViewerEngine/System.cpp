@@ -44,6 +44,48 @@ bool SystemClass::Initialize()
 	return true;
 }
 
+bool SystemClass::Initialize(HWND hwnd)
+{
+	int screenWidth, screenHeight;
+	bool result;
+
+	m_hwnd = hwnd;
+
+	// Get an external pointer to this object.	
+	ApplicationHandle = this;
+
+	// Get the instance of this application.
+	m_hinstance = GetModuleHandle(NULL);
+
+	// Give the application a name.
+	m_applicationName = L"Engine";
+
+
+	// Initialize the width and height of the screen to zero before sending the variables into the function.
+	screenWidth = 0;
+	screenHeight = 0;
+
+	RECT rect;
+	if (GetWindowRect(hwnd, &rect))
+	{
+		screenWidth = rect.right - rect.left;
+		screenHeight = rect.bottom - rect.top;
+	}
+
+	// Create the graphics object.  This object will handle rendering all the graphics for this application.
+	m_Graphics = new GraphicsClass;
+	if (!m_Graphics)
+	{
+		return false;
+	}
+	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
 
 void SystemClass::Shutdown()
 {

@@ -7,6 +7,7 @@ public ref class ModelViewer
 {
 public:
 	ModelViewer();
+	ModelViewer(int pHWND);
 	~ModelViewer();
 
 	void Load(System::String^ modelFilePath, System::String^ textureFilePath);

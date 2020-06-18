@@ -1,4 +1,5 @@
-﻿using Easy_3D_Editor.ViewModels;
+﻿using Easy_3D_Editor.Services;
+using Easy_3D_Editor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,22 @@ namespace Easy_3D_Editor.Views
         public ModelMainMenu()
         {            
             InitializeComponent();
+            Loaded += (x, y) =>
+            {
+                var posi = PositionManager.Instance.GetPosition(Title);
+                if (posi != null)
+                {
+                    Left = posi.X;
+                    Top = posi.Y;
+                }
+            };
             ViewManager.RootView.WindowState = WindowState.Minimized;
             //this.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(this.Window_MouseDown), true);
             Closing += (x, y) =>
             {
                 ((ModelViewModel)DataContext).close2();
                 ViewManager.RootView.WindowState = WindowState.Normal;
+                PositionManager.Instance.SetPosition(Title, (int)Left, (int)Top);
             };
         }
 

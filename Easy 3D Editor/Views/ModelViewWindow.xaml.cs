@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Easy_3D_Editor.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,19 @@ namespace Easy_3D_Editor.Views
         public ModelViewWindow()
         {
             InitializeComponent();
+            Closing += (s, e) =>
+            {
+                PositionManager.Instance.SetPosition(Title, (int)Left, (int)Top);
+            };
+            Loaded += (x, y) =>
+            {
+                var posi = PositionManager.Instance.GetPosition(Title);
+                if (posi != null)
+                {
+                    Left = posi.X;
+                    Top = posi.Y;
+                }
+            };
         }
     }
 }

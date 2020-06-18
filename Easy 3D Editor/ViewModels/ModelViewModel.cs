@@ -152,11 +152,10 @@ namespace Easy_3D_Editor.ViewModels
             this.xz.BoneAction = bone;
             this.yz.BoneAction = bone;
 
-            var window = new ModelViewWindow();
-            window.Show();
-            var wih = new WindowInteropHelper(window);
-            IntPtr hWnd = wih.Handle;
-            engine = new ModelViewer(hWnd.ToInt32());
+            var modelWindowViewModel = new ModelViewWindowViewModel();
+            var window = ViewManager.ShowView(typeof(ModelViewWindow), modelWindowViewModel);
+            engine = new ModelViewer(ViewManager.GetWindowHandle(window));
+            modelWindowViewModel.Engine = engine;
 
             SetPropertyChangeForAll();
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 
 namespace WpfServices
 {
@@ -8,7 +9,12 @@ namespace WpfServices
     {
         public static Window RootView { get; private set; }
 
-
+        public static int GetWindowHandle(Window window)
+        {
+            var wih = new WindowInteropHelper(window);
+            IntPtr hWnd = wih.Handle;
+            return hWnd.ToInt32();
+        }
 
         public static bool ShowDialogRootView(Type viewType, ViewModelBase viewModel)
         {
@@ -28,7 +34,7 @@ namespace WpfServices
             return !view.IsActive ? view.ShowDialog() ?? false : false;
         }
 
-        public static void ShowView(Type viewType, ViewModelBase viewModel, int? x = null, int? y = null)
+        public static Window ShowView(Type viewType, ViewModelBase viewModel, int? x = null, int? y = null)
         {
             var view = createView(viewType, viewModel);
             if (x != null)
@@ -36,6 +42,7 @@ namespace WpfServices
             if (y != null)
                 view.Top = y.Value;
             view.Show();
+            return view;
         }
 
         public static bool FileDialog(out string selectedFileName, string filter, string initialDirectory = "c:\\")

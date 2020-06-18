@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="ModelViewWindow" Width="800" Height="600">
     <Grid>
-        
+        <TextBlock Foreground="Red" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="Bold">No content loaded. Please set texture to start Rendering.</TextBlock>
     </Grid>
 </Window>

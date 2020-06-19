@@ -283,5 +283,10 @@
     <Resource Include="Resources\load.png" />
     <Resource Include="Resources\texture.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\emptyTexture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

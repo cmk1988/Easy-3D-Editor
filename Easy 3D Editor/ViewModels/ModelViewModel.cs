@@ -320,10 +320,14 @@ namespace Easy_3D_Editor.ViewModels
 
         void update3DView()
         {
+            exporter.Export("tmp.obj");
             if (textureFile != null)
             {
-                exporter.Export("tmp.obj");
                 engine.Load(System.IO.Path.GetFullPath("tmp.obj"), textureFile);
+            }
+            else
+            {
+                engine.Load(System.IO.Path.GetFullPath("tmp.obj"), System.IO.Path.GetFullPath(@"Resources\emptyTexture.png"));
             }
         }
 

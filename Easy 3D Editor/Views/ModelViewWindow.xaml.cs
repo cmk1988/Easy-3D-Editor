@@ -30,6 +30,7 @@ namespace Easy_3D_Editor.Views
                 MouseLeftButtonDown += vm.MouseLeftDown_Event;
                 MouseRightButtonDown += vm.MouseRightDown_Event;
                 MouseWheel += vm.MouseWheel_Event;
+                MouseLeftButtonUp += vm.MouseLeftUp_Event;
             };
         }
     }

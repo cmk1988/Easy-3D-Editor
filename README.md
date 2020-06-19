@@ -3,9 +3,9 @@
 
 ## New features:
 * 3D Window added (please use DirectX SDK to build)
+* Shader compiling removed (Shader in binary file)
 
 ## Coming soon:
-* Removing shader compiling (Shader in binary file)
 * Move camera position in 3D window
 * Better handling of adding bones
 * adding animation creator

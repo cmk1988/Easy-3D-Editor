@@ -3,6 +3,8 @@
 
 #include <d3dx10math.h>
 
+# define M_PI           3.14159265358979323846  /* pi */
+
 class CameraClass
 {
 public:
@@ -12,6 +14,7 @@ public:
 
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
+	void MoveInDirection(float);
 
 	D3DXVECTOR3 GetPosition();
 	D3DXVECTOR3 GetRotation();

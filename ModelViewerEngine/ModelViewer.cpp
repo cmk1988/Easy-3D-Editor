@@ -38,6 +38,11 @@ void ModelViewer::Rotate(float x, float y, float z)
 	m_System->RotateCam(x, y, z);
 }
 
+void ModelViewer::Move(float x)
+{
+	m_System->MoveCam(x);
+}
+
 const wchar_t* ModelViewer::getWCharFromString(System::String^ str)
 {
 	pin_ptr<const wchar_t> convertedValue = PtrToStringChars(str);

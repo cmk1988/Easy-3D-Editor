@@ -8,24 +8,25 @@ namespace Easy_3D_Editor.ViewModels
     {
         public ModelViewer Engine { get; set; }
 
-        Point lastPoint;
-        bool isMovement = false;
+        Point? lastPoint;
 
         public void MouseMove_Event(object sender, MouseEventArgs e)
         {
-            var point = e.GetPosition((Window)sender);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(lastPoint != null)
+                var point = e.GetPosition((Window)sender);
+                if (lastPoint != null)
                 {
-                    var x = (lastPoint.X - point.X) / 100.0f;
-                    var y = (lastPoint.Y - point.Y) / 100.0f;
+                    var x = (lastPoint.Value.X - point.X) / 100.0f;
+                    var y = (lastPoint.Value.Y - point.Y) / 100.0f;
 
                     Engine.Rotate((float)(y), (float)(x), 0.0f);
                 }
+                else
+                    lastPoint = point;
             }
             else
-                lastPoint = point;
+                lastPoint = null;
         }
 
         public void MouseRightDown_Event(object sender, MouseEventArgs e)
@@ -38,9 +39,10 @@ namespace Easy_3D_Editor.ViewModels
 
         }
 
-        public void MouseWheel_Event(object sender, MouseEventArgs e)
+        public void MouseWheel_Event(object sender, MouseWheelEventArgs e)
         {
-
+            var x = e.Delta / 100.0f;
+            Engine.Move(x);
         }
 
         public ModelViewWindowViewModel()

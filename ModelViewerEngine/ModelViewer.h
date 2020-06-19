@@ -12,6 +12,7 @@ public:
 
 	void Load(System::String^ modelFilePath, System::String^ textureFilePath);
 	void Rotate(float x, float y, float z);
+	void Move(float x);
 
 private:
 	static const wchar_t* getWCharFromString(System::String^ str);

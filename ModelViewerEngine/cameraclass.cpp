@@ -35,6 +35,18 @@ void CameraClass::SetRotation(float x, float y, float z)
 	return;
 }
 
+void CameraClass::MoveInDirection(float offset)
+{
+	float pitch = m_rotationX;
+	float yaw = m_rotationY;
+	float newPosX = offset * sinf(yaw) * cosf(pitch);
+	float newPosY = offset * -sinf(pitch);
+	float newPosZ = offset * cosf(yaw) * cosf(pitch);
+	m_positionX += newPosX;
+	m_positionY += newPosY;
+	m_positionZ += newPosZ;
+}
+
 D3DXVECTOR3 CameraClass::GetPosition()
 {
 	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);

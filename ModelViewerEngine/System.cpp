@@ -182,6 +182,11 @@ void SystemClass::RotateCam(float x, float y, float z)
 	m_Graphics->m_Camera->SetRotation(x, y, z);
 }
 
+void SystemClass::MoveCam(float x)
+{
+	m_Graphics->m_Camera->MoveInDirection(x);
+}
+
 
 bool SystemClass::Frame()
 {

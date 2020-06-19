@@ -24,6 +24,7 @@ public:
 	void PauseRendering();
 	void ContinueRendering();
 	void RotateCam(float x, float y, float z);
+	void MoveCam(float x);
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 

@@ -78,9 +78,6 @@ bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCou
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const wchar_t* vsFilename, const wchar_t* psFilename)
 {
 	HRESULT result;
-	ID3D10Blob* errorMessage;
-	ID3D10Blob* vertexShaderBuffer;
-	ID3D10Blob* pixelShaderBuffer;
 
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[5];
 	unsigned int numElements;
@@ -89,63 +86,18 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 
 	D3D11_BUFFER_DESC lightBufferDesc;
 
-	// Initialize the pointers this function will use to null.
-	errorMessage = 0;
-	vertexShaderBuffer = 0;
-	pixelShaderBuffer = 0;
-
-    // Compile the vertex shader code.
-  	result = D3DX11CompileFromFileW(vsFilename, NULL, NULL, "TextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
-								   &vertexShaderBuffer, &errorMessage, NULL);
-
- 	if(FAILED(result))
-	{
-		// If the shader failed to compile it should have writen something to the error message.
-		if(errorMessage)
-		{
-			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
-		}
-		// If there was nothing in the error message then it simply could not find the shader file itself.
-		else
-		{
-			MessageBox(hwnd, vsFilename, L"Missing Shader File", MB_OK);
-		}
-
-		return false;
-	}
-
-    // Compile the pixel shader code.
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "TexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
-								   &pixelShaderBuffer, &errorMessage, NULL);
-	if(FAILED(result))
-	{
-		// If the shader failed to compile it should have writen something to the error message.
-		if(errorMessage)
-		{
-			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
-		}
-		// If there was  nothing in the error message then it simply could not find the file itself.
-		else
-		{
-			MessageBox(hwnd, psFilename, L"Missing Shader File", MB_OK);
-		}
-
-		return false;
-	}
-	//Save(L"TexturePixelShader.shader", pixelShaderBuffer);
-	//BinaryShader ps(L"TexturePixelShader.shader");
-	//Load(L"TexturePixelShader.shader", ps);
+	BinaryShader vertexShader(L"vertexshader.bsh");
+	BinaryShader pixelShader(L"pixelshader.bsh");
 
     // Create the vertex shader from the buffer.
-    result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+    result = device->CreateVertexShader(vertexShader.GetBufferPointer(), vertexShader.GetSize(), NULL, &m_vertexShader);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
     // Create the pixel shader from the buffer.
-    result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
-	//result = device->CreatePixelShader(ps.GetBufferPointer(), ps.GetSize(), NULL, &m_pixelShader);
+    result = device->CreatePixelShader(pixelShader.GetBufferPointer(), pixelShader.GetSize(), NULL, &m_pixelShader);
 	if(FAILED(result))
 	{
 		return false;
@@ -198,19 +150,12 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
     numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	// Create the vertex input layout.
-	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), 
+	result = device->CreateInputLayout(polygonLayout, numElements, vertexShader.GetBufferPointer(), vertexShader.GetSize(), 
 		                               &m_layout);
 	if(FAILED(result))
 	{
 		return false;
 	}
-
-	// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
-	vertexShaderBuffer->Release();
-	vertexShaderBuffer = 0;
-
-	pixelShaderBuffer->Release();
-	pixelShaderBuffer = 0;
 
 	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
     matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -468,12 +413,4 @@ void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int in
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
-}
-
-void TextureShaderClass::Save(wstring filename, ID3D10Blob* shader)
-{
-	SIZE_T size = shader->GetBufferSize();
-	ofstream of(filename, std::ios::binary);
-	of.write((const char*)&size, sizeof(SIZE_T));
-	of.write((const char*)shader->GetBufferPointer(), shader->GetBufferSize());
 }

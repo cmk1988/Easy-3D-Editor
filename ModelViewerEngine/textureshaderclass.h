@@ -117,9 +117,6 @@ private:
 	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*);
 	void RenderShader(ID3D11DeviceContext*, int);
 
-	void Save(wstring filename, ID3D10Blob* shader);
-	void Load(wstring filename, BinaryShader& shader);
-
 private:
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;

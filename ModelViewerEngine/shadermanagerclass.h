@@ -11,7 +11,6 @@
 ///////////////////////
 #include "d3dclass.h"
 #include "textureshaderclass.h"
-#include "nonormaltextureshaderclass.h"
 
 #include "textureclass.h"
 
@@ -29,7 +28,6 @@ public:
 
 private:
 	TextureShaderClass* m_TextureShader;
-	NoNormalTextureShaderClass* m_noNormalTextureShader;
 
 	ID3D11ShaderResourceView* m_emptyBumpMap;
 

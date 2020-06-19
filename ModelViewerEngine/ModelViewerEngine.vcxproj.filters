@@ -33,9 +33,6 @@
     <ClInclude Include="ModelViewer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="nonormaltextureshaderclass.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Paths.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -81,9 +78,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Paths.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="nonormaltextureshaderclass.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Models.cpp">

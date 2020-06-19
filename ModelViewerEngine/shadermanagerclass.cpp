@@ -40,13 +40,6 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	m_noNormalTextureShader = new NoNormalTextureShaderClass;
-	if (!m_noNormalTextureShader)
-		return false;
-	result = m_noNormalTextureShader->Initialize(device, hwnd);
-	if (!result)
-		return false;
-
 	m_diffuseColor = new D3DXVECTOR4(0.0f, 0.0f, 0.0f, 1.0f);
 	m_lightDirection = new D3DXVECTOR3(0.0f, -0.707f, 0.707f);
 
@@ -63,13 +56,6 @@ void ShaderManagerClass::Shutdown()
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = nullptr;
-	}
-
-	if (m_noNormalTextureShader)
-	{
-		m_noNormalTextureShader->Shutdown();
-		delete m_noNormalTextureShader;
-		m_noNormalTextureShader = nullptr;
 	}
 
 	if(m_diffuseColor)

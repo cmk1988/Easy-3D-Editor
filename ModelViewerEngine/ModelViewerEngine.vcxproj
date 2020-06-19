@@ -154,7 +154,6 @@
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="Models.h" />
     <ClInclude Include="ModelViewer.h" />
-    <ClInclude Include="nonormaltextureshaderclass.h" />
     <ClInclude Include="Paths.h" />
     <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="shadermanagerclass.h" />
@@ -171,7 +170,6 @@
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="Models.cpp" />
     <ClCompile Include="ModelViewer.cpp" />
-    <ClCompile Include="nonormaltextureshaderclass.cpp" />
     <ClCompile Include="Paths.cpp" />
     <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="shadermanagerclass.cpp" />

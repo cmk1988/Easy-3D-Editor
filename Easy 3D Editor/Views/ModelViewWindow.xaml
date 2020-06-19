@@ -11,6 +11,6 @@
                    VerticalAlignment="Center" 
                    HorizontalAlignment="Center"
                    FontSize="24"
-                   FontWeight="Bold">No content loaded. Please set texture to start Rendering.</TextBlock>
+                   FontWeight="Bold">No content loaded.</TextBlock>
     </Grid>
 </Window>

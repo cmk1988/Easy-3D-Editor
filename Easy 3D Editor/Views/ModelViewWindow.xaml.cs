@@ -1,4 +1,5 @@
 ﻿using Easy_3D_Editor.Services;
+using Easy_3D_Editor.ViewModels;
 using System.Windows;
 
 namespace Easy_3D_Editor.Views
@@ -23,6 +24,12 @@ namespace Easy_3D_Editor.Views
                     Left = posi.X;
                     Top = posi.Y;
                 }
+
+                var vm = (ModelViewWindowViewModel)DataContext;
+                MouseMove += vm.MouseMove_Event;
+                MouseLeftButtonDown += vm.MouseLeftDown_Event;
+                MouseRightButtonDown += vm.MouseRightDown_Event;
+                MouseWheel += vm.MouseWheel_Event;
             };
         }
     }

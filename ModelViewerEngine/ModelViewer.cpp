@@ -35,6 +35,7 @@ void ModelViewer::Load(System::String^ modelFilePath, System::String^ textureFil
 
 void ModelViewer::Rotate(float x, float y, float z)
 {
+	m_System->RotateCam(x, y, z);
 }
 
 const wchar_t* ModelViewer::getWCharFromString(System::String^ str)

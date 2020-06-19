@@ -177,6 +177,11 @@ void SystemClass::ContinueRendering()
 	pause = false;
 }
 
+void SystemClass::RotateCam(float x, float y, float z)
+{
+	m_Graphics->m_Camera->SetRotation(x, y, z);
+}
+
 
 bool SystemClass::Frame()
 {

@@ -3,12 +3,11 @@
 
  http://www.apache.org/licenses/LICENSE-2.0
  */
-using System;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 namespace Xml2CSharp
 {
-	[XmlRoot(ElementName = "contributor", Namespace = "http://www.collada.org/2005/11/COLLADASchema")]
+    [XmlRoot(ElementName = "contributor", Namespace = "http://www.collada.org/2005/11/COLLADASchema")]
 	public class Contributor
 	{
 		[XmlElement(ElementName = "author", Namespace = "http://www.collada.org/2005/11/COLLADASchema")]

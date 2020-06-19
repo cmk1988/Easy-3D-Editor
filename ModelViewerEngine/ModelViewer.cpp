@@ -27,8 +27,6 @@ void ModelViewer::Load(System::String^ modelFilePath, System::String^ textureFil
 {
 	m_System->PauseRendering();
 	Models::GetInstance()->SetModel(
-		//L"D:\\Develop\\Easy-3D-Editor\\Easy 3D Editor\\bin\Debug\\t1.obj", 
-		//L"C:\\Users\\User\\Pictures\\sixcuts.png"
 		getWCharFromString(modelFilePath),
 		getWCharFromString(textureFilePath)
 		);

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Easy_3D_Editor.Services
 {
@@ -14,6 +10,11 @@ namespace Easy_3D_Editor.Services
         public int SphereLevel { get; set; }
         public string SavePath { get; set; }
         public string DefaultTexturepath { get; set; }
+
+        //3D Engine settings:
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int FpsLimit { get; set; }
     }
 
     class ConfigLoader

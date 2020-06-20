@@ -118,7 +118,10 @@ void SystemClass::run()
 			while (pause)
 			{
 				if (cancel)
+				{
+					isRunning = false;
 					return;
+				}
 				Sleep(20);
 			}
 			isPaused = false;

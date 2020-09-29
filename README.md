@@ -1,7 +1,7 @@
 # Easy-3D-Editor
 3D editor using cubes and spheres to create 3D objects. Exporting Wavefront obj files.
 
-Please use v142 to build this project. For older buildtools there is a workaround to avoid errors: Split the modelviwer project in two DLL-projects (CLR and native C++).
+Please use v142 to build this project. For older buildtools there is a workaround to avoid errors: Split the modelviewer project in two DLL-projects (CLR and native C++).
 
 ## New features:
 * 3D Window added (please use DirectX SDK to build)

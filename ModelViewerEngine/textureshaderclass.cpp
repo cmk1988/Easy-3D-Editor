@@ -86,8 +86,8 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 
 	D3D11_BUFFER_DESC lightBufferDesc;
 
-	BinaryShader vertexShader(L"vertexshader.bsh");
-	BinaryShader pixelShader(L"pixelshader.bsh");
+	BinaryShader vertexShader(L"Shaders/vertexshader.bsh");
+	BinaryShader pixelShader(L"Shaders/pixelshader.bsh");
 
     // Create the vertex shader from the buffer.
     result = device->CreateVertexShader(vertexShader.GetBufferPointer(), vertexShader.GetSize(), NULL, &m_vertexShader);
